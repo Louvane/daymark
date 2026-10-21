@@ -1,22 +1,24 @@
 import SwiftUI
 
-// 面板:点击菜单栏图标弹出的主操作入口(票 01 为占位,票 02 起替换为列表)
+/// 面板内导航路由(票 03 扩展详情/编辑)
+enum PanelRoute: Hashable {
+    case create
+}
+
+/// 面板:点击菜单栏图标弹出的主操作入口。所有导航在面板内 push/pop,不另开窗口。
 struct PanelView: View {
+    @State private var path: [PanelRoute] = []
+
     var body: some View {
-        VStack(spacing: 12) {
-            Text("panel.placeholder.title")
-                .font(.headline)
-            Text("panel.placeholder.subtitle")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-            // 票 02 起启用创建入口
-            Button {
-            } label: {
-                Image(systemName: "plus")
-            }
-            .disabled(true)
+        NavigationStack(path: $path) {
+            DaymarkListView(onAdd: { path.append(.create) })
+                .navigationDestination(for: PanelRoute.self) { route in
+                    switch route {
+                    case .create:
+                        DaymarkFormView(mode: .create, onBack: { path.removeLast() })
+                    }
+                }
         }
-        .padding(16)
-        .frame(width: 320, height: 200)
+        .frame(width: 320, height: 440)
     }
 }

@@ -5,25 +5,25 @@
       "id": "1",
       "subject": "票01: 菜单栏应用骨架(xcodeproj/MenuBarExtra/xcstrings/冒烟测试)",
       "description": "建 Daymark.xcodeproj(手写 pbxproj,FileSystemSynchronizedRootGroup),app+tests 两 target;LSUIElement、bundle id、daymark:// scheme 占位;MenuBarExtra window 面板占位;Localizable.xcstrings(zh-Hans 主语言+en);恒真冒烟测试;xcodebuild build 零警告 + test 全绿;提交引用票号",
-      "status": "in_progress",
+      "status": "completed",
       "activeForm": "搭建应用骨架",
       "metadata": {},
       "blocks": [],
       "blockedBy": [],
       "createdAt": 1792571339070,
-      "updatedAt": 1792571389967
+      "updatedAt": 1792571567089
     },
     {
       "id": "2",
       "subject": "票02: Daymark 模型+创建与浏览(DateMath daysBetween+状态)",
       "description": "@Model 全字段;DateMath.daysBetween+状态判定(今天/未来/过去);创建表单(名称必填+日期);列表按最近将到排序,行显 Emoji 占位+名称+剩余/已过天数;SwiftData in-memory CRUD 测试;闰日/跨月/跨年测试",
-      "status": "pending",
+      "status": "in_progress",
       "activeForm": "实现创建与浏览",
       "metadata": {},
       "blocks": [],
       "blockedBy": [],
       "createdAt": 1792571339073,
-      "updatedAt": 1792571339073
+      "updatedAt": 1792571567090
     },
     {
       "id": "3",
