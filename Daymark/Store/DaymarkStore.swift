@@ -11,22 +11,24 @@ final class DaymarkStore {
     private var rescheduler: ReminderRescheduler?
 
     /// 应用运行时:默认持久化位置,附带真实通知调度
-    init(scheduler: any ReminderScheduling = UserNotificationScheduler()) throws {
+    init(scheduler: any ReminderScheduling = UserNotificationScheduler(),
+         reminderTime: @escaping () -> DaymarkReminderTime = { .default }) throws {
         let container = try ModelContainer(for: Daymark.self)
         self.container = container
         self.context = container.mainContext
         context.autosaveEnabled = false
-        self.rescheduler = ReminderRescheduler(scheduler: scheduler)
+        self.rescheduler = ReminderRescheduler(scheduler: scheduler, reminderTime: reminderTime)
     }
 
     /// 测试/预览:in-memory,可注入假调度器
-    init(inMemory: Bool, scheduler: (any ReminderScheduling)? = nil) throws {
+    init(inMemory: Bool, scheduler: (any ReminderScheduling)? = nil,
+         reminderTime: @escaping () -> DaymarkReminderTime = { .default }) throws {
         let config = ModelConfiguration(isStoredInMemoryOnly: inMemory)
         let container = try ModelContainer(for: Daymark.self, configurations: config)
         self.container = container
         self.context = ModelContext(container)
         context.autosaveEnabled = false
-        self.rescheduler = scheduler.map { ReminderRescheduler(scheduler: $0) }
+        self.rescheduler = scheduler.map { ReminderRescheduler(scheduler: $0, reminderTime: reminderTime) }
     }
 
     /// 测试:指定磁盘位置(模拟「重启应用数据仍在」)

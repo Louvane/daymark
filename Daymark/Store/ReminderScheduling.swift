@@ -47,15 +47,20 @@ struct UserNotificationScheduler: ReminderScheduling {
 @MainActor
 final class ReminderRescheduler {
     private let scheduler: any ReminderScheduling
+    /// 默认提醒时刻提供者(票 08:来自设置,可变)
+    private let reminderTime: () -> DaymarkReminderTime
 
-    init(scheduler: any ReminderScheduling) {
+    init(scheduler: any ReminderScheduling,
+         reminderTime: @escaping () -> DaymarkReminderTime = { .default }) {
         self.scheduler = scheduler
+        self.reminderTime = reminderTime
     }
 
     func rescheduleAll(_ facts: [DaymarkReminderFacts],
                        reference: Date = .now,
                        calendar: Calendar = DateMath.userCalendar()) async {
-        let requests = ReminderPlanning.requests(from: facts, reference: reference, calendar: calendar)
+        let requests = ReminderPlanning.requests(from: facts, reference: reference,
+                                                 calendar: calendar, time: reminderTime())
         await scheduler.removeAllPending()
         guard !requests.isEmpty else { return }
         await scheduler.requestAuthorizationIfNeeded()

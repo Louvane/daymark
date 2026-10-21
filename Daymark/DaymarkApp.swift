@@ -1,15 +1,21 @@
 import SwiftUI
 import UserNotifications
 
-// 应用入口:纯菜单栏形态(LSUIElement),MenuBarExtra window 样式面板
+// 应用入口:纯菜单栏形态(LSUIElement),MenuBarExtra window 样式面板 + Settings 场景
 @main
 struct DaymarkApp: App {
     @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
     @State private var store: DaymarkStore
+    @State private var settings: AppSettings
 
     init() {
+        let appSettings = AppSettings()
+        _settings = State(initialValue: appSettings)
         do {
-            let created = try DaymarkStore()
+            let created = try DaymarkStore(
+                scheduler: UserNotificationScheduler(),
+                reminderTime: { appSettings.reminderTime }
+            )
             _store = State(initialValue: created)
             // 应用启动全量重排提醒(票 05:启动与数据变更时全量重排)
             Task { await created.rescheduleReminders() }
@@ -17,12 +23,18 @@ struct DaymarkApp: App {
             // 容器初始化失败属于不可恢复错误:无存储则应用无意义
             fatalError("无法初始化 SwiftData 容器:\(error)")
         }
+        // 打开应用时校正开机启动状态(以系统实际注册为准)
+        Task { @MainActor in
+            let service = SMAppLoginItemService()
+            appSettings.syncLaunchAtLogin(actual: service.isRegistered)
+        }
     }
 
     var body: some Scene {
         MenuBarExtra {
             PanelView()
                 .environment(store)
+                .environment(settings)
                 .environment(appDelegate.router)
                 .modelContainer(store.container)
         } label: {
@@ -30,6 +42,12 @@ struct DaymarkApp: App {
             Image(systemName: "calendar.badge.clock")
         }
         .menuBarExtraStyle(.window)
+
+        Settings {
+            SettingsView()
+                .environment(store)
+                .environment(settings)
+        }
     }
 }
 

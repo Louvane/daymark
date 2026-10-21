@@ -23,7 +23,9 @@ enum ReminderPlanning {
 
     static func requests(from facts: [DaymarkReminderFacts],
                          reference: Date,
-                         calendar: Calendar) -> [ReminderRequest] {
+                         calendar: Calendar,
+                         time: DaymarkReminderTime = DaymarkReminderTime(hour: defaultReminderHour,
+                                                                         minute: defaultReminderMinute)) -> [ReminderRequest] {
         facts.compactMap { fact in
             guard fact.remindDays > 0 else { return nil }
 
@@ -35,8 +37,8 @@ enum ReminderPlanning {
                 reminderDate = occurrence
             } else {
                 var comps = calendar.dateComponents([.year, .month, .day], from: occurrence)
-                comps.hour = defaultReminderHour
-                comps.minute = defaultReminderMinute
+                comps.hour = time.hour
+                comps.minute = time.minute
                 guard let at = calendar.date(from: comps) else { return nil }
                 reminderDate = at
             }

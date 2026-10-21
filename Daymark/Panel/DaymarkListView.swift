@@ -10,6 +10,7 @@ enum DaymarkSortMode: String {
 /// 列表:最近优先/手动两种排序,每行颜色徽标 + Emoji + 名称 + 天数;点行进详情,手动模式可拖拽
 struct DaymarkListView: View {
     @Environment(DaymarkStore.self) private var store
+    @Environment(\.openSettings) private var openSettings
     @Query private var daymarks: [Daymark]
     @AppStorage("panel.sortMode") private var sortModeRaw = DaymarkSortMode.upcoming.rawValue
 
@@ -46,6 +47,14 @@ struct DaymarkListView: View {
             Text("panel.title")
                 .font(.headline)
             Spacer()
+            // 偏好设置入口(⌘, 同效)
+            Button {
+                openSettings()
+            } label: {
+                Image(systemName: "gearshape")
+            }
+            .buttonStyle(.plain)
+            .help(Text("list.settings.help"))
             // 排序方式切换(最近优先 ↔ 手动)
             Menu {
                 Picker("list.sort.mode", selection: $sortModeRaw) {
