@@ -1,0 +1,40 @@
+{
+  "sourceLanguage" : "zh-Hans",
+  "strings" : {
+    "panel.placeholder.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your important days will appear here."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的重要日子将出现在这里。"
+          }
+        }
+      }
+    },
+    "panel.placeholder.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daymark"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daymark 日标"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

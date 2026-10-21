@@ -1,0 +1,56 @@
+name: Daymark
+options:
+  bundleIdPrefix: app.louvane
+  deploymentTarget:
+    macOS: "15.0"
+  developmentLanguage: zh-Hans
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    CODE_SIGN_STYLE: Automatic
+    CODE_SIGN_IDENTITY: "-"
+    MARKETING_VERSION: 0.1.0
+    CURRENT_PROJECT_VERSION: 1
+    GENERATE_INFOPLIST_FILE: YES
+    LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+targets:
+  Daymark:
+    type: application
+    platform: macOS
+    sources:
+      - Daymark
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.louvane.Daymark
+        PRODUCT_NAME: Daymark
+        INFOPLIST_FILE: Daymark/Info.plist
+        INFOPLIST_KEY_LSUIElement: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Daymark
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.productivity
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        ENABLE_HARDENED_RUNTIME: YES
+        ENABLE_PREVIEWS: YES
+  DaymarkTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - DaymarkTests
+    dependencies:
+      - target: Daymark
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.louvane.DaymarkTests
+schemes:
+  Daymark:
+    build:
+      targets:
+        Daymark: all
+        DaymarkTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - DaymarkTests
