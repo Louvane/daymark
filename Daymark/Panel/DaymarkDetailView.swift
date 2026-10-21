@@ -76,7 +76,10 @@ struct DaymarkDetailView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 18)
-        .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 12))
+        .background(
+            DaymarkColorPalette.color(at: item.colorIndex).opacity(0.18),
+            in: RoundedRectangle(cornerRadius: 12)
+        )
     }
 
     private var phaseText: Text {

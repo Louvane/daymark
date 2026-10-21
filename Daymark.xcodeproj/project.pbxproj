@@ -12,20 +12,25 @@
 		1162364EB12130A837732FC1 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = FFC2DB073A8FE8D0984E08E4 /* Localizable.xcstrings */; };
 		1B7BFB70DF575E164F61AFC3 /* DateMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085369E4FF8267DCE6DC35E2 /* DateMath.swift */; };
 		33CA3C6DB081D73D97CECB45 /* Daymark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9409277FBC42596E96125CC4 /* Daymark.swift */; };
+		34ABEB1A0EB5480EB32A48AC /* EmojiCatalog.json in Resources */ = {isa = PBXBuildFile; fileRef = C00DF65B412622BF1D131A67 /* EmojiCatalog.json */; };
 		39B8A95864F254A04B2F982F /* SmokeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2545B87F88B7D7977ECF2AA6 /* SmokeTests.swift */; };
 		4253C0AE32B73EB3F477C10A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 216A116D552D838931F1A800 /* Assets.xcassets */; };
+		44E0E14E71E2F795989ED511 /* EmojiCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EFBB9A0C39193D8A891E71 /* EmojiCatalog.swift */; };
 		4D500929D00B4378D30B61F0 /* DaymarkApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DBFA2EA959C8B177C7D8F95 /* DaymarkApp.swift */; };
+		663DA222945C92A9F1FDE807 /* EmojiPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FDDFA34476624C1FC22748 /* EmojiPickerView.swift */; };
 		752B460B09B160D26194C448 /* NotificationRouting.swift in Sources */ = {isa = PBXBuildFile; fileRef = B495990DC550968B746B961E /* NotificationRouting.swift */; };
 		872BCA8DF5268B37AD7AAA1F /* DaymarkStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92AFC5FB0348102CB2E8B52F /* DaymarkStatus.swift */; };
 		909B3EEFDF44C0F3E68C32CE /* ReminderPlanning.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE92414DF78C73CF81E743D3 /* ReminderPlanning.swift */; };
 		9B788B0CFB90E693A86C062B /* DaymarkStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D846FAA0C53C4B5A462F896 /* DaymarkStoreTests.swift */; };
 		D2721A77B0EB35E59504DB82 /* ReminderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E71726DA02400AD3CB2350 /* ReminderTests.swift */; };
+		D4717D5E9D1F36A13E6A2BAD /* ColorPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023E287F547D6A9F14C15F67 /* ColorPalette.swift */; };
 		D5F6D18C9E962C3F7F435C2F /* DaymarkDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27229751F367A1DF381FA73E /* DaymarkDetailView.swift */; };
 		D7F73FEC81998CE78AC777A8 /* RepeatCycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78FA989538DCBAD72BE64755 /* RepeatCycle.swift */; };
 		EAAD222D356DD0EACC19E788 /* PanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2F35C2CDF1E2DF76CA76F88 /* PanelView.swift */; };
 		F39A9A2B224D4513B4BD353F /* ReminderScheduling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45504018137E18B145441CF3 /* ReminderScheduling.swift */; };
 		F992FAC4EC9C70FF427FDF31 /* DaymarkStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72C5579ADBD4AA6F82FEBA53 /* DaymarkStore.swift */; };
 		FD5CEB906117E55E60D8CF9A /* DaymarkFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F3532E4B0612B196A5E427 /* DaymarkFormView.swift */; };
+		FF64D3248AC0F22CD5FA148E /* AppearanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D853763C8B7BA1420652BADA /* AppearanceTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,16 +44,19 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		023E287F547D6A9F14C15F67 /* ColorPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPalette.swift; sourceTree = "<group>"; };
 		085369E4FF8267DCE6DC35E2 /* DateMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateMath.swift; sourceTree = "<group>"; };
 		167E8B11D66FF3CD20A81DA4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		216A116D552D838931F1A800 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2545B87F88B7D7977ECF2AA6 /* SmokeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmokeTests.swift; sourceTree = "<group>"; };
 		27229751F367A1DF381FA73E /* DaymarkDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaymarkDetailView.swift; sourceTree = "<group>"; };
 		31F3532E4B0612B196A5E427 /* DaymarkFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaymarkFormView.swift; sourceTree = "<group>"; };
+		39FDDFA34476624C1FC22748 /* EmojiPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiPickerView.swift; sourceTree = "<group>"; };
 		45504018137E18B145441CF3 /* ReminderScheduling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderScheduling.swift; sourceTree = "<group>"; };
 		4D846FAA0C53C4B5A462F896 /* DaymarkStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaymarkStoreTests.swift; sourceTree = "<group>"; };
 		68E71726DA02400AD3CB2350 /* ReminderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderTests.swift; sourceTree = "<group>"; };
 		6C3F2746644EB0D9DE365203 /* DaymarkListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaymarkListView.swift; sourceTree = "<group>"; };
+		70EFBB9A0C39193D8A891E71 /* EmojiCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiCatalog.swift; sourceTree = "<group>"; };
 		72C5579ADBD4AA6F82FEBA53 /* DaymarkStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaymarkStore.swift; sourceTree = "<group>"; };
 		78FA989538DCBAD72BE64755 /* RepeatCycle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatCycle.swift; sourceTree = "<group>"; };
 		8DBFA2EA959C8B177C7D8F95 /* DaymarkApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaymarkApp.swift; sourceTree = "<group>"; };
@@ -57,7 +65,9 @@
 		9409277FBC42596E96125CC4 /* Daymark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Daymark.swift; sourceTree = "<group>"; };
 		AE92414DF78C73CF81E743D3 /* ReminderPlanning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderPlanning.swift; sourceTree = "<group>"; };
 		B495990DC550968B746B961E /* NotificationRouting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationRouting.swift; sourceTree = "<group>"; };
+		C00DF65B412622BF1D131A67 /* EmojiCatalog.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = EmojiCatalog.json; sourceTree = "<group>"; };
 		C45D67256EBF98769007380F /* DateMathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateMathTests.swift; sourceTree = "<group>"; };
+		D853763C8B7BA1420652BADA /* AppearanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceTests.swift; sourceTree = "<group>"; };
 		E83493A89B1BCD0BA84EAE7C /* DaymarkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DaymarkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2F35C2CDF1E2DF76CA76F88 /* PanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelView.swift; sourceTree = "<group>"; };
 		FFC2DB073A8FE8D0984E08E4 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
@@ -83,10 +93,19 @@
 				F7337C90C8E1F6C5767EB6EE /* Domain */,
 				99F72434F9266230FCDDDECC /* Model */,
 				E46988EF5DB3FFAF50780922 /* Panel */,
+				8875CD346B88E4800AD0665C /* Resources */,
 				AF4568D42DF6A3ED1CEA81D1 /* Store */,
 				B57EA546808D419A411C4A31 /* Support */,
 			);
 			path = Daymark;
+			sourceTree = "<group>";
+		};
+		8875CD346B88E4800AD0665C /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				C00DF65B412622BF1D131A67 /* EmojiCatalog.json */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		8DBEC5D9A119680BCF957024 = {
@@ -126,9 +145,11 @@
 		E46988EF5DB3FFAF50780922 /* Panel */ = {
 			isa = PBXGroup;
 			children = (
+				023E287F547D6A9F14C15F67 /* ColorPalette.swift */,
 				27229751F367A1DF381FA73E /* DaymarkDetailView.swift */,
 				31F3532E4B0612B196A5E427 /* DaymarkFormView.swift */,
 				6C3F2746644EB0D9DE365203 /* DaymarkListView.swift */,
+				39FDDFA34476624C1FC22748 /* EmojiPickerView.swift */,
 				F2F35C2CDF1E2DF76CA76F88 /* PanelView.swift */,
 			);
 			path = Panel;
@@ -139,6 +160,7 @@
 			children = (
 				085369E4FF8267DCE6DC35E2 /* DateMath.swift */,
 				92AFC5FB0348102CB2E8B52F /* DaymarkStatus.swift */,
+				70EFBB9A0C39193D8A891E71 /* EmojiCatalog.swift */,
 				AE92414DF78C73CF81E743D3 /* ReminderPlanning.swift */,
 				78FA989538DCBAD72BE64755 /* RepeatCycle.swift */,
 			);
@@ -148,6 +170,7 @@
 		FF01EA4A57CC79B6E7E4F7DE /* DaymarkTests */ = {
 			isa = PBXGroup;
 			children = (
+				D853763C8B7BA1420652BADA /* AppearanceTests.swift */,
 				C45D67256EBF98769007380F /* DateMathTests.swift */,
 				4D846FAA0C53C4B5A462F896 /* DaymarkStoreTests.swift */,
 				68E71726DA02400AD3CB2350 /* ReminderTests.swift */,
@@ -239,6 +262,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4253C0AE32B73EB3F477C10A /* Assets.xcassets in Resources */,
+				34ABEB1A0EB5480EB32A48AC /* EmojiCatalog.json in Resources */,
 				1162364EB12130A837732FC1 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -250,6 +274,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4717D5E9D1F36A13E6A2BAD /* ColorPalette.swift in Sources */,
 				1B7BFB70DF575E164F61AFC3 /* DateMath.swift in Sources */,
 				33CA3C6DB081D73D97CECB45 /* Daymark.swift in Sources */,
 				4D500929D00B4378D30B61F0 /* DaymarkApp.swift in Sources */,
@@ -258,6 +283,8 @@
 				055C2752F32E3536A7D9D35D /* DaymarkListView.swift in Sources */,
 				872BCA8DF5268B37AD7AAA1F /* DaymarkStatus.swift in Sources */,
 				F992FAC4EC9C70FF427FDF31 /* DaymarkStore.swift in Sources */,
+				44E0E14E71E2F795989ED511 /* EmojiCatalog.swift in Sources */,
+				663DA222945C92A9F1FDE807 /* EmojiPickerView.swift in Sources */,
 				752B460B09B160D26194C448 /* NotificationRouting.swift in Sources */,
 				EAAD222D356DD0EACC19E788 /* PanelView.swift in Sources */,
 				909B3EEFDF44C0F3E68C32CE /* ReminderPlanning.swift in Sources */,
@@ -270,6 +297,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF64D3248AC0F22CD5FA148E /* AppearanceTests.swift in Sources */,
 				0AFBF1A23EAF5C8E545B65F1 /* DateMathTests.swift in Sources */,
 				9B788B0CFB90E693A86C062B /* DaymarkStoreTests.swift in Sources */,
 				D2721A77B0EB35E59504DB82 /* ReminderTests.swift in Sources */,

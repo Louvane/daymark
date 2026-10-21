@@ -35,6 +35,26 @@ enum DaymarkStatus {
     }
 }
 
+extension DaymarkSort {
+    /// 手动排序:按 sortWeight 升序(同权重按创建顺序稳定)
+    static func manual(_ items: [Daymark]) -> [Daymark] {
+        items.sorted { lhs, rhs in
+            if lhs.sortWeight != rhs.sortWeight {
+                return lhs.sortWeight < rhs.sortWeight
+            }
+            return lhs.createdAt < rhs.createdAt
+        }
+    }
+
+    /// 拖拽完成后按新顺序重排权重(0..n-1)
+    static func applyManualOrder(_ moved: [Daymark], save: () -> Void) {
+        for (index, item) in moved.enumerated() {
+            item.sortWeight = Double(index)
+        }
+        save()
+    }
+}
+
 enum DaymarkSort {
     /// 「最近将到」排序:今天/未来按发生日升序,已过去按发生日降序(最近过去的在前)垫底
     static func upcoming(_ items: [Daymark], reference: Date, calendar: Calendar) -> [Daymark] {

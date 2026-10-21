@@ -53,25 +53,25 @@
       "id": "5",
       "subject": "票05: 提醒通知(ReminderScheduling+全量重排幂等)",
       "description": "表单提前天数选择;触发日推导进 DateMath;ReminderScheduling 协议+假调度器;先 removeAll 再加回幂等;重复只为下次发生;删除撤销;点通知定位详情;文案双语",
-      "status": "in_progress",
+      "status": "completed",
       "activeForm": "实现提醒通知",
       "metadata": {},
       "blocks": [],
       "blockedBy": [],
       "createdAt": 1792571339076,
-      "updatedAt": 1792572584374
+      "updatedAt": 1792573269571
     },
     {
       "id": "6",
       "subject": "票06: 外观自定义(Emoji 分类选择器/色板/手动排序)",
       "description": "内置分类 Emoji JSON+选择器(常用区+分类浏览);预设色板;列表行/详情呈色;手动排序 sortWeight+最近优先切换;持久化",
-      "status": "pending",
+      "status": "in_progress",
       "activeForm": "实现外观自定义",
       "metadata": {},
       "blocks": [],
       "blockedBy": [],
       "createdAt": 1792571339078,
-      "updatedAt": 1792571339078
+      "updatedAt": 1792573269573
     },
     {
       "id": "7",

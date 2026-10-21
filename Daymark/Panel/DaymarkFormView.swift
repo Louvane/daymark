@@ -15,6 +15,9 @@ struct DaymarkFormView: View {
     @State private var date = Date.now
     @State private var repeatCycle: RepeatCycle = .none
     @State private var remindDays = 0
+    @State private var emoji = "📌"
+    @State private var colorIndex = 0
+    @State private var showsEmojiPicker = false
 
     /// 编辑模式从既有 Daymark 预填,创建模式用默认值
     init(mode: Mode, onBack: @escaping () -> Void) {
@@ -25,6 +28,8 @@ struct DaymarkFormView: View {
             _date = State(initialValue: item.startDate)
             _repeatCycle = State(initialValue: item.repeatCycle)
             _remindDays = State(initialValue: item.remindDays)
+            _emoji = State(initialValue: item.emoji)
+            _colorIndex = State(initialValue: item.colorIndex)
         }
     }
 
@@ -49,6 +54,38 @@ struct DaymarkFormView: View {
                 }
                 .pickerStyle(.segmented)
                 .labelsHidden()
+
+                // 外观:Emoji + 颜色(票 06)
+                HStack {
+                    Text("form.field.appearance")
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    // 当前 Emoji 预览,点击展开选择器
+                    Button {
+                        showsEmojiPicker.toggle()
+                    } label: {
+                        Text(emoji)
+                            .font(.title3)
+                    }
+                    .buttonStyle(.plain)
+                    // 预设色板
+                    HStack(spacing: 5) {
+                        ForEach(0..<DaymarkColorPalette.count, id: \.self) { index in
+                            Circle()
+                                .fill(DaymarkColorPalette.color(at: index))
+                                .frame(width: 16, height: 16)
+                                .overlay {
+                                    if index == DaymarkColorPalette.normalizedIndex(colorIndex) {
+                                        Circle().strokeBorder(.primary, lineWidth: 1.5).padding(-2)
+                                    }
+                                }
+                                .onTapGesture { colorIndex = index }
+                        }
+                    }
+                }
+                if showsEmojiPicker {
+                    EmojiPickerView(selection: $emoji, onDone: { showsEmojiPicker = false })
+                }
                 Picker("form.field.remind", selection: $remindDays) {
                     Text("remind.none").tag(0)
                     ForEach(Self.remindDayOptions, id: \.self) { days in
@@ -82,10 +119,13 @@ struct DaymarkFormView: View {
         switch mode {
         case .create:
             store.add(Daymark(name: cleanedName, date: date,
+                              emoji: emoji, colorIndex: colorIndex,
                               repeatCycle: repeatCycle, remindDays: remindDays))
         case .edit(let item):
             item.name = cleanedName
             item.startDate = date
+            item.emoji = emoji
+            item.colorIndex = colorIndex
             item.repeatCycle = repeatCycle
             item.remindDays = remindDays
             store.update(item)
