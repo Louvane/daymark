@@ -97,6 +97,12 @@ struct DaymarkDetailView: View {
             fieldRow(labelKey: "detail.field.date") {
                 Text(item.startDate, format: .dateTime.year().month().day())
             }
+            if item.repeatCycle != .none {
+                Divider().padding(.leading, 14)
+                fieldRow(labelKey: "form.field.repeat") {
+                    Text(LocalizedStringKey(item.repeatCycle.labelKey))
+                }
+            }
         }
         .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 12))
     }

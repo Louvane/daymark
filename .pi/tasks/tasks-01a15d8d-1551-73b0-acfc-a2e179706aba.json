@@ -29,25 +29,25 @@
       "id": "3",
       "subject": "票03: 面板导航:详情/编辑/删除/空态",
       "description": "列表→详情→编辑 push 导航;详情展示全部字段;编辑复用创建表单;删除确认;空态引导双语;Store 更新/删除测试",
-      "status": "in_progress",
+      "status": "completed",
       "activeForm": "实现面板导航",
       "metadata": {},
       "blocks": [],
       "blockedBy": [],
       "createdAt": 1792571339074,
-      "updatedAt": 1792572029491
+      "updatedAt": 1792572252924
     },
     {
       "id": "4",
       "subject": "票04: 重复周期滚动(nextOccurrence 纯函数+边界测试)",
       "description": "表单加重复周期选择;nextOccurrence 纯函数(周=7天、月末日夹钳、2/29→3/1、跨年、参考日=发生日);详情展示;不重复行为回归",
-      "status": "pending",
+      "status": "in_progress",
       "activeForm": "实现重复周期",
       "metadata": {},
       "blocks": [],
       "blockedBy": [],
       "createdAt": 1792571339075,
-      "updatedAt": 1792571339075
+      "updatedAt": 1792572252926
     },
     {
       "id": "5",

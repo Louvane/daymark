@@ -13,6 +13,7 @@ struct DaymarkFormView: View {
     @Environment(DaymarkStore.self) private var store
     @State private var name = ""
     @State private var date = Date.now
+    @State private var repeatCycle: RepeatCycle = .none
 
     /// 编辑模式从既有 Daymark 预填,创建模式用默认值
     init(mode: Mode, onBack: @escaping () -> Void) {
@@ -21,6 +22,7 @@ struct DaymarkFormView: View {
         if case .edit(let item) = mode {
             _name = State(initialValue: item.name)
             _date = State(initialValue: item.startDate)
+            _repeatCycle = State(initialValue: item.repeatCycle)
         }
     }
 
@@ -35,6 +37,13 @@ struct DaymarkFormView: View {
             Form {
                 TextField("form.field.name", text: $name, prompt: Text("form.field.name.placeholder"))
                 DatePicker("form.field.date", selection: $date, displayedComponents: [.date])
+                Picker("form.field.repeat", selection: $repeatCycle) {
+                    ForEach(RepeatCycle.allCases) { cycle in
+                        Text(LocalizedStringKey(cycle.labelKey)).tag(cycle)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .labelsHidden()
             }
             .formStyle(.grouped)
         }
@@ -61,10 +70,11 @@ struct DaymarkFormView: View {
     private func save() {
         switch mode {
         case .create:
-            store.add(Daymark(name: cleanedName, date: date))
+            store.add(Daymark(name: cleanedName, date: date, repeatCycle: repeatCycle))
         case .edit(let item):
             item.name = cleanedName
             item.startDate = date
+            item.repeatCycle = repeatCycle
             store.update(item)
         }
         onBack()

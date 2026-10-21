@@ -17,10 +17,11 @@ struct DaymarkDisplayState: Equatable, Sendable {
 }
 
 enum DaymarkStatus {
-    /// 单日 Daymark 的状态判定。重复滚动(票 04)由 nextOccurrence 提供,当前先直取锚定日。
+    /// 状态判定:先滚动到下一次发生(票 04),再分今天/未来/过去三态
     static func state(anchor: Date, repeat: RepeatCycle,
                       reference: Date, calendar: Calendar) -> DaymarkDisplayState {
-        let occurrence = anchor
+        let occurrence = DateMath.nextOccurrence(anchor: anchor, repeat: `repeat`,
+                                                 reference: reference, calendar: calendar)
         let phase: DaymarkDisplayState.Phase
         let diff = DateMath.daysBetween(reference, occurrence, in: calendar)
         if diff == 0 {
