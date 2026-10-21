@@ -22,9 +22,6 @@ struct EmojiCatalog: Codable, Equatable, Sendable {
         return catalog
     }
 
-    /// 分类展示文案 key
-    var categoryLabelKey: (Category) -> String { Self.labelKey(for:) }
-
     static func labelKey(for category: Category) -> String {
         "emoji.category.\(category.id)"
     }

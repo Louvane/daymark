@@ -11,33 +11,38 @@ final class DaymarkStore {
     private var rescheduler: ReminderRescheduler?
 
     /// 应用运行时:默认持久化位置,附带真实通知调度
-    init(scheduler: any ReminderScheduling = UserNotificationScheduler(),
-         reminderTime: @escaping () -> DaymarkReminderTime = { .default }) throws {
+    convenience init(scheduler: any ReminderScheduling = UserNotificationScheduler(),
+                     reminderTime: @escaping () -> DaymarkReminderTime = { .default }) throws {
         let container = try ModelContainer(for: Daymark.self)
-        self.container = container
-        self.context = container.mainContext
-        context.autosaveEnabled = false
-        self.rescheduler = ReminderRescheduler(scheduler: scheduler, reminderTime: reminderTime)
+        self.init(container: container, context: container.mainContext,
+                  scheduler: scheduler, reminderTime: reminderTime)
     }
 
     /// 测试/预览:in-memory,可注入假调度器
-    init(inMemory: Bool, scheduler: (any ReminderScheduling)? = nil,
-         reminderTime: @escaping () -> DaymarkReminderTime = { .default }) throws {
+    convenience init(inMemory: Bool, scheduler: (any ReminderScheduling)? = nil,
+                     reminderTime: @escaping () -> DaymarkReminderTime = { .default }) throws {
         let config = ModelConfiguration(isStoredInMemoryOnly: inMemory)
         let container = try ModelContainer(for: Daymark.self, configurations: config)
-        self.container = container
-        self.context = ModelContext(container)
-        context.autosaveEnabled = false
-        self.rescheduler = scheduler.map { ReminderRescheduler(scheduler: $0, reminderTime: reminderTime) }
+        self.init(container: container, context: ModelContext(container),
+                  scheduler: scheduler, reminderTime: reminderTime)
     }
 
     /// 测试:指定磁盘位置(模拟「重启应用数据仍在」)
-    init(at url: URL) throws {
+    convenience init(at url: URL) throws {
         let config = ModelConfiguration(url: url)
         let container = try ModelContainer(for: Daymark.self, configurations: config)
+        self.init(container: container, context: ModelContext(container),
+                  scheduler: nil, reminderTime: { .default })
+    }
+
+    /// 指定构造器:容器/上下文/重排协调器装配的唯一入口
+    private init(container: ModelContainer, context: ModelContext,
+                 scheduler: (any ReminderScheduling)?,
+                 reminderTime: @escaping () -> DaymarkReminderTime) {
         self.container = container
-        self.context = ModelContext(container)
+        self.context = context
         context.autosaveEnabled = false
+        self.rescheduler = scheduler.map { ReminderRescheduler(scheduler: $0, reminderTime: reminderTime) }
     }
 
     func add(_ daymark: Daymark) {

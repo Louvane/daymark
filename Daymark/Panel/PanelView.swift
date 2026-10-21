@@ -15,11 +15,8 @@ struct PanelView: View {
 
     var body: some View {
         NavigationStack(path: $path) {
-            DaymarkListView(
-                onAdd: { path.append(.create(nil)) },
-                onOpen: { path.append(.detail($0)) }
-            )
-            .navigationDestination(for: PanelRoute.self) { route in
+            listView
+                .navigationDestination(for: PanelRoute.self) { route in
                 switch route {
                 case .create(let prefill):
                     DaymarkFormView(mode: .create, prefill: prefill, onBack: pop)
@@ -35,24 +32,17 @@ struct PanelView: View {
                         )
                     } else {
                         // 数据已被删除(路由残留):安全回落到列表
-                        DaymarkListView(
-                            onAdd: { path.append(.create(nil)) },
-                            onOpen: { path.append(.detail($0)) }
-                        )
+                        listView
                     }
                 case .edit(let id):
                     if let item = item(with: id) {
                         DaymarkFormView(mode: .edit(item), onBack: pop)
                     } else {
-                        DaymarkListView(
-                            onAdd: { path.append(.create(nil)) },
-                            onOpen: { path.append(.detail($0)) }
-                        )
+                        listView
                     }
                 }
             }
         }
-        .frame(width: 320, height: 440)
         .frame(width: 320, height: 440)
         .onChange(of: router.pendingDetailID) { _, newID in
             // 通知点击 → 面板打开后直接落在对应详情
@@ -66,6 +56,14 @@ struct PanelView: View {
             path = [.create(payload)]
             router.pendingCreatePayload = nil
         }
+    }
+
+    /// 列表视图统一构造(回落场景复用)
+    private var listView: some View {
+        DaymarkListView(
+            onAdd: { path.append(.create(nil)) },
+            onOpen: { path.append(.detail($0)) }
+        )
     }
 
     private func item(with id: UUID) -> Daymark? {

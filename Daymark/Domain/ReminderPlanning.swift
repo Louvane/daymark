@@ -3,7 +3,7 @@ import Foundation
 /// 提醒请求值对象:调度器(真/假)消费的统一形态
 struct ReminderRequest: Equatable, Sendable {
     let daymarkID: UUID
-    /// 本次提醒面向的发生日(重复事件为下一次)
+    /// 本次提醒面向的发生日(重复 Daymark 为下一次)
     let occurrence: Date
     let fireDate: Date
     let title: String

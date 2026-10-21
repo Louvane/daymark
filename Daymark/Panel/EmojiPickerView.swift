@@ -5,8 +5,8 @@ struct EmojiPickerView: View {
     @Binding var selection: String
     let onDone: () -> Void
 
-    @State private var selectedCategoryID = ""
     private let catalog = EmojiCatalog.load()
+    @State private var selectedCategoryID = "" // onAppear 取第一个分类,避免首开空白
 
     var body: some View {
         VStack(spacing: 8) {
@@ -48,6 +48,12 @@ struct EmojiPickerView: View {
                     .padding(.vertical, 2)
                 }
                 .frame(maxHeight: 130)
+            }
+        }
+        .onAppear {
+            // 初始选中第一个分类,避免首开分类网格空白
+            if selectedCategoryID.isEmpty, let first = catalog.categories.first {
+                selectedCategoryID = first.id
             }
         }
     }

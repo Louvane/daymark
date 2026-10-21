@@ -188,7 +188,7 @@ extension DateMathTests {
                                         reference: Self.date(2026, 10, 21), calendar: cal)
         XCTAssertEqual(state.phase, .upcoming(daysLeft: 72))
         XCTAssertEqual(state.occurrence, Self.date(2027, 1, 1))
-        // 重复事件当天也判「就是今天」
+        // 重复 Daymark 当天也判「就是今天」
         let todayState = DaymarkStatus.state(anchor: Self.date(2025, 10, 21), repeat: .yearly,
                                              reference: Self.date(2026, 10, 21), calendar: cal)
         XCTAssertEqual(todayState.phase, .today)
@@ -260,5 +260,45 @@ extension DateMathTests {
         let state = DaymarkStatus.state(anchor: Self.date(2026, 10, 28), end: Self.date(2026, 11, 2),
                                         repeat: .none, reference: Self.date(2026, 10, 30), calendar: cal)
         XCTAssertEqual(state.phase, .range(.inProgress(dayNumber: 3, totalDays: 6)))
+    }
+}
+
+// MARK: - 票 07 回归:跨时区/夏令时边界(spec:由测试钉死)
+
+extension DateMathTests {
+    /// 纽约 2026-03-08 02:00 进入 DST;自然日差仍按当地日历天算
+    func testDaysBetweenAcrossDSTSpringForward() throws {
+        var cal = Calendar(identifier: .gregorian)
+        cal.timeZone = try XCTUnwrap(TimeZone(identifier: "America/New_York"))
+        // 3/7(EST)→ 3/9(EDT)仍为 2 天,不因少一小时变 1.958 天
+        XCTAssertEqual(DateMath.daysBetween(Self.date(2026, 3, 7), Self.date(2026, 3, 9), in: cal), 2)
+        // 秋季回拨:11/1 有 25 小时,仍是 1 天
+        XCTAssertEqual(DateMath.daysBetween(Self.date(2026, 10, 31), Self.date(2026, 11, 1), in: cal), 1)
+    }
+
+    /// 每周滚动跨 DST 仍保当地 09:00 与星期几
+    func testNextOccurrenceWeeklyAcrossDST() throws {
+        var cal = Calendar(identifier: .gregorian)
+        cal.timeZone = try XCTUnwrap(TimeZone(identifier: "America/New_York"))
+        let anchor = Self.date(2026, 3, 1, hour: 9) // 周日(EST)
+        let next = DateMath.nextOccurrence(anchor: anchor, repeat: .weekly,
+                                           reference: Self.date(2026, 3, 2), calendar: cal)
+        XCTAssertEqual(next, Self.date(2026, 3, 8, hour: 9)) // 下周日(EDT),当地时刻不变
+        XCTAssertEqual(cal.component(.weekday, from: next), cal.component(.weekday, from: anchor))
+    }
+
+    /// 「最近将到」排序:今天 < 未来近 < 未来远 < 过去近 < 过去远
+    func testUpcomingSortOrder() {
+        let cal = Self.calendar
+        let reference = Self.date(2026, 10, 21)
+        let today = Daymark(name: "今天", date: Self.date(2026, 10, 21))
+        let near = Daymark(name: "近未来", date: Self.date(2026, 10, 23))
+        let far = Daymark(name: "远未来", date: Self.date(2026, 12, 1))
+        let recentPast = Daymark(name: "近过去", date: Self.date(2026, 10, 19))
+        let distantPast = Daymark(name: "远过去", date: Self.date(2026, 1, 1))
+
+        let sorted = DaymarkSort.upcoming([distantPast, today, far, recentPast, near],
+                                          reference: reference, calendar: cal)
+        XCTAssertEqual(sorted.map(\.name), ["今天", "近未来", "远未来", "近过去", "远过去"])
     }
 }

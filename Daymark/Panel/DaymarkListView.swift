@@ -1,24 +1,23 @@
 import SwiftUI
 import SwiftData
 
-/// 排序方式
-enum DaymarkSortMode: String {
-    case upcoming
-    case manual
-}
-
 /// 列表:最近优先/手动两种排序,每行颜色徽标 + Emoji + 名称 + 天数;点行进详情,手动模式可拖拽
 struct DaymarkListView: View {
     @Environment(DaymarkStore.self) private var store
+    @Environment(AppSettings.self) private var settings
     @Environment(\.openSettings) private var openSettings
     @Query private var daymarks: [Daymark]
-    @AppStorage("panel.sortMode") private var sortModeRaw = DaymarkSortMode.upcoming.rawValue
 
     let onAdd: () -> Void
     let onOpen: (UUID) -> Void
 
+    /// 排序偏好绑定(AppSettings 统一持久化通道)
+    private var sortModeBinding: Binding<DaymarkSortMode> {
+        Binding(get: { settings.sortMode }, set: { settings.sortMode = $0 })
+    }
+
     private var sortMode: DaymarkSortMode {
-        DaymarkSortMode(rawValue: sortModeRaw) ?? .upcoming
+        settings.sortMode
     }
 
     private var sorted: [Daymark] {
@@ -57,9 +56,9 @@ struct DaymarkListView: View {
             .help(Text("list.settings.help"))
             // 排序方式切换(最近优先 ↔ 手动)
             Menu {
-                Picker("list.sort.mode", selection: $sortModeRaw) {
-                    Text("list.sort.upcoming").tag(DaymarkSortMode.upcoming.rawValue)
-                    Text("list.sort.manual").tag(DaymarkSortMode.manual.rawValue)
+                Picker("list.sort.mode", selection: sortModeBinding) {
+                    Text("list.sort.upcoming").tag(DaymarkSortMode.upcoming)
+                    Text("list.sort.manual").tag(DaymarkSortMode.manual)
                 }
                 .pickerStyle(.inline)
             } label: {
@@ -162,8 +161,6 @@ struct DaymarkRow: View {
     }
 
     private var countdownText: Text {
-        let state = DaymarkStatus.state(anchor: item.startDate, end: item.endDate, repeat: item.repeatCycle,
-                                        reference: .now, calendar: DateMath.userCalendar())
-        return countdownLabel(state.phase)
+        countdownLabel(item.displayState().phase)
     }
 }

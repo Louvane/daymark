@@ -6,7 +6,7 @@
 
 **Status:** resolved
 
-- [x] daymark://create?name=…&date=…&repeat=… 解析:预填创建表单并打开面板;参数非法时安全降级为空表单
+- [x] daymark://create?name=…&date=…&repeat=… 解析:预填创建表单并打开面板;参数非法时安全降级为空表单 _(注:「打开面板」实现为独立快速创建小窗(ADR-0001 局部 AppKit);MenuBarExtra 面板无法编程打开,面板打开时亦落预填路由)_
 - [x] URL 解析为纯函数(可测),测试覆盖正常/缺参/乱码/恶意长度
 - [x] README:简介、截图位、功能清单、构建步骤(xcodebuild)、Roadmap(v1.5/v2 引用 CONTEXT.md 交付阶段)、致谢 Moment
 - [x] LICENSE:MIT(版权人 Louvane)

@@ -10,8 +10,7 @@ struct DaymarkDetailView: View {
     @State private var showsDeleteConfirm = false
 
     private var state: DaymarkDisplayState {
-        DaymarkStatus.state(anchor: item.startDate, end: item.endDate, repeat: item.repeatCycle,
-                            reference: .now, calendar: DateMath.userCalendar())
+        item.displayState()
     }
 
     var body: some View {

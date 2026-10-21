@@ -25,6 +25,7 @@ struct DaymarkReminderTime: Equatable, Sendable {
 final class AppSettings {
     static let reminderMinutesKey = "settings.defaultReminderMinutes"
     static let launchAtLoginKey = "settings.launchAtLogin"
+    static let sortModeKey = "settings.listSortMode"
 
     private let defaults: UserDefaults
 
@@ -55,6 +56,12 @@ final class AppSettings {
     /// 打开应用时校正:以系统实际注册状态为准
     func syncLaunchAtLogin(actual isRegistered: Bool) {
         launchAtLogin = isRegistered
+    }
+
+    /// 列表排序偏好(最近优先/手动)
+    var sortMode: DaymarkSortMode {
+        get { DaymarkSortMode(rawValue: defaults.string(forKey: Self.sortModeKey) ?? "") ?? .upcoming }
+        set { defaults.set(newValue.rawValue, forKey: Self.sortModeKey) }
     }
 }
 

@@ -83,20 +83,25 @@ enum DaymarkStatus {
     }
 }
 
+/// 排序方式(展示偏好,AppSettings 持久化)
+enum DaymarkSortMode: String, Sendable {
+    case upcoming
+    case manual
+}
+
 enum DaymarkSort {
-    /// 「最近将到」排序:今天/进行中按发生日升序,已过去按发生日降序(最近过去的在前)垫底
+    /// 「最近将到」排序:今天/进行中按发生日升序,已过去按发生日降序(最近过去的在前)垫底。
+    /// 先为每项算一次展示态再排序,避免比较器内 O(n log n) 次重复推导。
     static func upcoming(_ items: [Daymark], reference: Date, calendar: Calendar) -> [Daymark] {
-        items.sorted { lhs, rhs in
-            let l = DaymarkStatus.state(anchor: lhs.startDate, end: lhs.endDate, repeat: lhs.repeatCycle,
-                                        reference: reference, calendar: calendar)
-            let r = DaymarkStatus.state(anchor: rhs.startDate, end: rhs.endDate, repeat: rhs.repeatCycle,
-                                        reference: reference, calendar: calendar)
-            let lRank = rank(of: l)
-            let rRank = rank(of: r)
-            if lRank != rRank { return lRank < rRank }
-            if lRank == 2 { return l.occurrence > r.occurrence } // 已过去:最近的在前
-            return l.occurrence < r.occurrence
-        }
+        items
+            .map { (item: $0, state: $0.displayState(reference: reference, calendar: calendar)) }
+            .sorted { lhs, rhs in
+                let (lRank, rRank) = (rank(of: lhs.state), rank(of: rhs.state))
+                if lRank != rRank { return lRank < rRank }
+                if lRank == 2 { return lhs.state.occurrence > rhs.state.occurrence } // 已过去:最近的在前
+                return lhs.state.occurrence < rhs.state.occurrence
+            }
+            .map(\.item)
     }
 
     /// 手动排序:按 sortWeight 升序(同权重按创建顺序稳定)

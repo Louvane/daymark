@@ -59,4 +59,11 @@ final class Daymark {
         DaymarkReminderFacts(id: id, name: name, anchor: startDate, hasTime: hasTime,
                              repeatCycle: repeatCycle, remindDays: remindDays)
     }
+
+    /// 展示态(排序、列表行、详情共用同一构造,避免四处重复传参)
+    func displayState(reference: Date = .now,
+                      calendar: Calendar = DateMath.userCalendar()) -> DaymarkDisplayState {
+        DaymarkStatus.state(anchor: startDate, end: endDate, repeat: repeatCycle,
+                            reference: reference, calendar: calendar)
+    }
 }

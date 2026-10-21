@@ -29,7 +29,8 @@ struct UserNotificationScheduler: ReminderScheduling {
         content.sound = .default
         content.userInfo = [Self.payloadIDKey: request.daymarkID.uuidString]
 
-        let components = Calendar.current.dateComponents(
+        // 与规划层同一日历构造(Gregorian+用户时区),DST 边界行为一致
+        let components = DateMath.userCalendar().dateComponents(
             [.year, .month, .day, .hour, .minute],
             from: request.fireDate
         )

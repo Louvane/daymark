@@ -101,25 +101,25 @@
       "id": "9",
       "subject": "票09: 收尾(URL scheme 解析/README/LICENSE/1.0.0)",
       "description": "daymark://create?name&date&repeat 纯函数解析+测试(正常/缺参/乱码/超长);README(简介/构建/Roadmap/致谢);MIT LICENSE(Louvane);版本 1.0.0+tag+打包说明;复查勾选全部票验收项",
-      "status": "in_progress",
+      "status": "completed",
       "activeForm": "收尾发布面",
       "metadata": {},
       "blocks": [],
       "blockedBy": [],
       "createdAt": 1792571339081,
-      "updatedAt": 1792574291853
+      "updatedAt": 1792574531825
     },
     {
       "id": "10",
       "subject": "终验: 全量测试+code-review+修复",
       "description": "全部票完成后跑完整 xcodebuild test;用 code-review 流程审查本次改动;修复发现的问题;按票逐个提交到 main",
-      "status": "pending",
+      "status": "in_progress",
       "activeForm": "审查与回归",
       "metadata": {},
       "blocks": [],
       "blockedBy": [],
       "createdAt": 1792571339083,
-      "updatedAt": 1792571339083
+      "updatedAt": 1792574531827
     }
   ]
 }
