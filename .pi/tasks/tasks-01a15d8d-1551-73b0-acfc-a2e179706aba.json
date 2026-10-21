@@ -65,25 +65,25 @@
       "id": "6",
       "subject": "票06: 外观自定义(Emoji 分类选择器/色板/手动排序)",
       "description": "内置分类 Emoji JSON+选择器(常用区+分类浏览);预设色板;列表行/详情呈色;手动排序 sortWeight+最近优先切换;持久化",
-      "status": "in_progress",
+      "status": "completed",
       "activeForm": "实现外观自定义",
       "metadata": {},
       "blocks": [],
       "blockedBy": [],
       "createdAt": 1792571339078,
-      "updatedAt": 1792573269573
+      "updatedAt": 1792573696174
     },
     {
       "id": "7",
       "subject": "票07: 日期区间与具体时刻(hasTime)",
       "description": "单日↔区间切换+校验;区间状态(未开始/进行中第X共Y/已结束)进 DateMath 带测试;hasTime 开关;提醒落该时刻;区间+重复=按开始日滚动钉死",
-      "status": "pending",
+      "status": "in_progress",
       "activeForm": "实现日期区间与时刻",
       "metadata": {},
       "blocks": [],
       "blockedBy": [],
       "createdAt": 1792571339079,
-      "updatedAt": 1792571339079
+      "updatedAt": 1792573696175
     },
     {
       "id": "8",

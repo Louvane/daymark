@@ -18,6 +18,9 @@ struct DaymarkFormView: View {
     @State private var emoji = "📌"
     @State private var colorIndex = 0
     @State private var showsEmojiPicker = false
+    @State private var isRange = false
+    @State private var endDate = Date.now.addingTimeInterval(86_400)
+    @State private var hasTime = false
 
     /// 编辑模式从既有 Daymark 预填,创建模式用默认值
     init(mode: Mode, onBack: @escaping () -> Void) {
@@ -30,6 +33,9 @@ struct DaymarkFormView: View {
             _remindDays = State(initialValue: item.remindDays)
             _emoji = State(initialValue: item.emoji)
             _colorIndex = State(initialValue: item.colorIndex)
+            _isRange = State(initialValue: item.endDate != nil)
+            _endDate = State(initialValue: item.endDate ?? item.startDate)
+            _hasTime = State(initialValue: item.hasTime)
         }
     }
 
@@ -46,7 +52,15 @@ struct DaymarkFormView: View {
             Divider()
             Form {
                 TextField("form.field.name", text: $name, prompt: Text("form.field.name.placeholder"))
-                DatePicker("form.field.date", selection: $date, displayedComponents: [.date])
+                DatePicker("form.field.date", selection: $date,
+                           displayedComponents: hasTime ? [.date, .hourAndMinute] : [.date])
+                Toggle("form.field.hasTime", isOn: $hasTime)
+                Toggle("form.field.range", isOn: $isRange)
+                if isRange {
+                    DatePicker("form.field.end", selection: $endDate,
+                               in: date...,
+                               displayedComponents: [.date])
+                }
                 Picker("form.field.repeat", selection: $repeatCycle) {
                     ForEach(RepeatCycle.allCases) { cycle in
                         Text(LocalizedStringKey(cycle.labelKey)).tag(cycle)
@@ -115,17 +129,27 @@ struct DaymarkFormView: View {
         .padding(.vertical, 10)
     }
 
+    /// 结束日校验:开启区间时结束 ≥ 开始(选择器已限下限,保存前再夹钳一次)
+    private var validatedEnd: Date? {
+        guard isRange else { return nil }
+        let calendar = DateMath.userCalendar()
+        return calendar.startOfDay(for: endDate) < calendar.startOfDay(for: date) ? date : endDate
+    }
+
     private func save() {
         switch mode {
         case .create:
             store.add(Daymark(name: cleanedName, date: date,
                               emoji: emoji, colorIndex: colorIndex,
+                              endDate: validatedEnd, hasTime: hasTime,
                               repeatCycle: repeatCycle, remindDays: remindDays))
         case .edit(let item):
             item.name = cleanedName
             item.startDate = date
             item.emoji = emoji
             item.colorIndex = colorIndex
+            item.endDate = validatedEnd
+            item.hasTime = hasTime
             item.repeatCycle = repeatCycle
             item.remindDays = remindDays
             store.update(item)

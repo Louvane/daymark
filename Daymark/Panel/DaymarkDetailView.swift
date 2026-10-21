@@ -10,7 +10,7 @@ struct DaymarkDetailView: View {
     @State private var showsDeleteConfirm = false
 
     private var state: DaymarkDisplayState {
-        DaymarkStatus.state(anchor: item.startDate, repeat: item.repeatCycle,
+        DaymarkStatus.state(anchor: item.startDate, end: item.endDate, repeat: item.repeatCycle,
                             reference: .now, calendar: DateMath.userCalendar())
     }
 
@@ -70,9 +70,15 @@ struct DaymarkDetailView: View {
                 .font(.system(size: 40))
             phaseText
                 .font(.title2.bold())
-            Text(item.startDate, format: .dateTime.year().month().day().weekday())
-                .font(.caption)
-                .foregroundStyle(.secondary)
+            if item.hasTime {
+                Text(item.startDate, format: .dateTime.year().month().day().weekday().hour().minute())
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } else {
+                Text(item.startDate, format: .dateTime.year().month().day().weekday())
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 18)
@@ -83,14 +89,7 @@ struct DaymarkDetailView: View {
     }
 
     private var phaseText: Text {
-        switch state.phase {
-        case .today:
-            return Text("countdown.today")
-        case .upcoming(let days):
-            return Text("countdown.daysLeft \(days)")
-        case .elapsed(let days):
-            return Text("countdown.daysPassed \(days)")
-        }
+        countdownLabel(state.phase)
     }
 
     private var fieldsCard: some View {
@@ -98,7 +97,18 @@ struct DaymarkDetailView: View {
             fieldRow(labelKey: "detail.field.name", value: item.name)
             Divider().padding(.leading, 14)
             fieldRow(labelKey: "detail.field.date") {
-                Text(item.startDate, format: .dateTime.year().month().day())
+                if item.hasTime {
+                    Text(item.startDate, format: .dateTime.year().month().day().hour().minute())
+                } else {
+                    Text(item.startDate, format: .dateTime.year().month().day())
+                }
+            }
+            if let end = item.endDate {
+                Divider().padding(.leading, 14)
+                fieldRow(labelKey: "detail.field.range") {
+                    Text("\(item.startDate.formatted(date: .abbreviated, time: .omitted)) – \(end.formatted(date: .abbreviated, time: .omitted))")
+                        .lineLimit(1)
+                }
             }
             if item.repeatCycle != .none {
                 Divider().padding(.leading, 14)

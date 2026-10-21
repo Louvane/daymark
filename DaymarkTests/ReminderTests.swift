@@ -17,8 +17,8 @@ final class ReminderTests: XCTestCase {
 
     private let calendar = DateMathTests.calendar
     private var reference: Date { Self.date(2026, 10, 21, hour: 12) }
-    private static func date(_ y: Int, _ m: Int, _ d: Int, hour: Int = 9) -> Date {
-        DateMathTests.date(y, m, d, hour: hour)
+    private static func date(_ y: Int, _ m: Int, _ d: Int, hour: Int = 9, minute: Int = 0) -> Date {
+        DateMathTests.date(y, m, d, hour: hour, minute: minute)
     }
 
     // MARK: - 规划:基础
@@ -59,6 +59,18 @@ final class ReminderTests: XCTestCase {
     }
 
     // MARK: - 规划:重复与时刻
+
+    func testPlanningWithSpecificTimeFallsAtOccurrenceTime() {
+        // hasTime:发生 11/1 14:30,提前 2 天 → 10/30 14:30(落在该时刻而非默认 09:00)
+        let requests = ReminderPlanning.requests(
+            from: [facts(anchor: Self.date(2026, 11, 1, hour: 14, minute: 30),
+                         hasTime: true, remindDays: 2)],
+            reference: reference, calendar: calendar
+        )
+        XCTAssertEqual(requests.count, 1)
+        XCTAssertEqual(requests.first?.fireDate,
+                       Self.date(2026, 10, 30, hour: 14, minute: 30))
+    }
 
     func testRepeatingSchedulesOnlyNextOccurrence() {
         // 每年生日 1/1,提前 3 天 → 只为 2027-01-01 排一条,触发 2026-12-29

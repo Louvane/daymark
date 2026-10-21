@@ -153,15 +153,8 @@ struct DaymarkRow: View {
     }
 
     private var countdownText: Text {
-        let state = DaymarkStatus.state(anchor: item.startDate, repeat: item.repeatCycle,
+        let state = DaymarkStatus.state(anchor: item.startDate, end: item.endDate, repeat: item.repeatCycle,
                                         reference: .now, calendar: DateMath.userCalendar())
-        switch state.phase {
-        case .today:
-            return Text("countdown.today")
-        case .upcoming(let days):
-            return Text("countdown.daysLeft \(days)")
-        case .elapsed(let days):
-            return Text("countdown.daysPassed \(days)")
-        }
+        return countdownLabel(state.phase)
     }
 }

@@ -194,3 +194,71 @@ extension DateMathTests {
         XCTAssertEqual(todayState.phase, .today)
     }
 }
+
+// MARK: - 票 07:日期区间与具体时刻
+
+extension DateMathTests {
+    // 区间状态:未开始/进行中/已结束
+    func testRangeNotStarted() {
+        let cal = Self.calendar
+        let phase = DaymarkStatus.rangePhase(start: Self.date(2026, 11, 1), end: Self.date(2026, 11, 5),
+                                             reference: Self.date(2026, 10, 21), calendar: cal)
+        XCTAssertEqual(phase, .notStarted(daysUntilStart: 11))
+    }
+
+    func testRangeInProgressDayAndTotal() {
+        let cal = Self.calendar
+        // 跨月区间 10/28–11/02,参考 10/30 → 第 3 天/共 6 天
+        let phase = DaymarkStatus.rangePhase(start: Self.date(2026, 10, 28), end: Self.date(2026, 11, 2),
+                                             reference: Self.date(2026, 10, 30), calendar: cal)
+        XCTAssertEqual(phase, .inProgress(dayNumber: 3, totalDays: 6))
+    }
+
+    func testRangeStartsTodayIsDayOne() {
+        let cal = Self.calendar
+        // 当天开始 → 第 1 天
+        let phase = DaymarkStatus.rangePhase(start: Self.date(2026, 10, 21), end: Self.date(2026, 10, 25),
+                                             reference: Self.date(2026, 10, 21), calendar: cal)
+        XCTAssertEqual(phase, .inProgress(dayNumber: 1, totalDays: 5))
+        // 当天结束 → 第 5 天
+        let lastDay = DaymarkStatus.rangePhase(start: Self.date(2026, 10, 21), end: Self.date(2026, 10, 25),
+                                               reference: Self.date(2026, 10, 25), calendar: cal)
+        XCTAssertEqual(lastDay, .inProgress(dayNumber: 5, totalDays: 5))
+    }
+
+    func testRangeEnded() {
+        let cal = Self.calendar
+        let phase = DaymarkStatus.rangePhase(start: Self.date(2026, 10, 1), end: Self.date(2026, 10, 5),
+                                             reference: Self.date(2026, 10, 21), calendar: cal)
+        XCTAssertEqual(phase, .ended(daysSinceEnd: 16))
+    }
+
+    func testSingleDayRangeToday() {
+        let cal = Self.calendar
+        // 单日区间当天:进行中第 1 天/共 1 天
+        let phase = DaymarkStatus.rangePhase(start: Self.date(2026, 10, 21), end: Self.date(2026, 10, 21),
+                                             reference: Self.date(2026, 10, 21), calendar: cal)
+        XCTAssertEqual(phase, .inProgress(dayNumber: 1, totalDays: 1))
+    }
+
+    // 区间 + 重复:仅按开始日滚动,区间长度不变
+    func testRepeatingRangeShiftsIntact() {
+        let cal = Self.calendar
+        // 每年区间 2024/3/1–3/5,参考 2026/10/21 → 下次 2027/3/1–3/5
+        let state = DaymarkStatus.state(anchor: Self.date(2024, 3, 1), end: Self.date(2024, 3, 5),
+                                        repeat: .yearly, reference: Self.date(2026, 10, 21), calendar: cal)
+        XCTAssertEqual(state.phase, .range(.notStarted(daysUntilStart: 131)))
+
+        // 长度不变:滚动后的结束日 = 2027/3/5
+        if case .range = state.phase {} else { XCTFail("应为 range phase") }
+        let end = cal.date(byAdding: .day, value: 4, to: state.occurrence)
+        XCTAssertEqual(end, Self.date(2027, 3, 5))
+    }
+
+    func testRangeInProgressState() {
+        let cal = Self.calendar
+        let state = DaymarkStatus.state(anchor: Self.date(2026, 10, 28), end: Self.date(2026, 11, 2),
+                                        repeat: .none, reference: Self.date(2026, 10, 30), calendar: cal)
+        XCTAssertEqual(state.phase, .range(.inProgress(dayNumber: 3, totalDays: 6)))
+    }
+}

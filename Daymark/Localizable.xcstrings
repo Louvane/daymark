@@ -224,6 +224,23 @@
         }
       }
     },
+    "detail.field.range": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Range"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "区间"
+          }
+        }
+      }
+    },
     "detail.field.remind": {
       "extractionState": "manual",
       "localizations": {
@@ -496,6 +513,40 @@
         }
       }
     },
+    "form.field.end": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "End"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "结束"
+          }
+        }
+      }
+    },
+    "form.field.hasTime": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Specific time"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "具体时刻"
+          }
+        }
+      }
+    },
     "form.field.name": {
       "extractionState": "manual",
       "localizations": {
@@ -526,6 +577,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "给这个日子起个名字"
+          }
+        }
+      }
+    },
+    "form.field.range": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Date range"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "日期区间"
           }
         }
       }
@@ -713,6 +781,93 @@
           "stringUnit": {
             "state": "translated",
             "value": "日标"
+          }
+        }
+      }
+    },
+    "range.ended %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Ended %lld day ago"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Ended %lld days ago"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans": {
+          "variations": {
+            "plural": {
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "已结束 · 过去 %lld 天"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "range.inProgress %lld %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Day %1$lld of %2$lld"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "进行中 · 第 %1$lld 天/共 %2$lld 天"
+          }
+        }
+      }
+    },
+    "range.notStarted %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Starts in %lld day"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Starts in %lld days"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans": {
+          "variations": {
+            "plural": {
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "还剩 %lld 天开始"
+                }
+              }
+            }
           }
         }
       }
