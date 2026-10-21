@@ -41,25 +41,25 @@
       "id": "4",
       "subject": "票04: 重复周期滚动(nextOccurrence 纯函数+边界测试)",
       "description": "表单加重复周期选择;nextOccurrence 纯函数(周=7天、月末日夹钳、2/29→3/1、跨年、参考日=发生日);详情展示;不重复行为回归",
-      "status": "in_progress",
+      "status": "completed",
       "activeForm": "实现重复周期",
       "metadata": {},
       "blocks": [],
       "blockedBy": [],
       "createdAt": 1792571339075,
-      "updatedAt": 1792572252926
+      "updatedAt": 1792572584373
     },
     {
       "id": "5",
       "subject": "票05: 提醒通知(ReminderScheduling+全量重排幂等)",
       "description": "表单提前天数选择;触发日推导进 DateMath;ReminderScheduling 协议+假调度器;先 removeAll 再加回幂等;重复只为下次发生;删除撤销;点通知定位详情;文案双语",
-      "status": "pending",
+      "status": "in_progress",
       "activeForm": "实现提醒通知",
       "metadata": {},
       "blocks": [],
       "blockedBy": [],
       "createdAt": 1792571339076,
-      "updatedAt": 1792571339076
+      "updatedAt": 1792572584374
     },
     {
       "id": "6",

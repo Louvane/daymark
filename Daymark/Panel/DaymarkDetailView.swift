@@ -103,6 +103,12 @@ struct DaymarkDetailView: View {
                     Text(LocalizedStringKey(item.repeatCycle.labelKey))
                 }
             }
+            if item.remindDays > 0 {
+                Divider().padding(.leading, 14)
+                fieldRow(labelKey: "detail.field.remind") {
+                    Text("remind.daysBefore \(item.remindDays)")
+                }
+            }
         }
         .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 12))
     }

@@ -53,4 +53,10 @@ final class Daymark {
         self.createdAt = .now
         self.updatedAt = .now
     }
+
+    /// 提醒规划输入切片(与 @Model 解耦)
+    var reminderFacts: DaymarkReminderFacts {
+        DaymarkReminderFacts(id: id, name: name, anchor: startDate, hasTime: hasTime,
+                             repeatCycle: repeatCycle, remindDays: remindDays)
+    }
 }

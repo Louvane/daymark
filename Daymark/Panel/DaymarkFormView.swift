@@ -14,6 +14,7 @@ struct DaymarkFormView: View {
     @State private var name = ""
     @State private var date = Date.now
     @State private var repeatCycle: RepeatCycle = .none
+    @State private var remindDays = 0
 
     /// 编辑模式从既有 Daymark 预填,创建模式用默认值
     init(mode: Mode, onBack: @escaping () -> Void) {
@@ -23,12 +24,16 @@ struct DaymarkFormView: View {
             _name = State(initialValue: item.name)
             _date = State(initialValue: item.startDate)
             _repeatCycle = State(initialValue: item.repeatCycle)
+            _remindDays = State(initialValue: item.remindDays)
         }
     }
 
     private var cleanedName: String {
         name.trimmingCharacters(in: .whitespacesAndNewlines)
     }
+
+    /// 可选提前提醒天数
+    static let remindDayOptions = [1, 2, 3, 7, 14, 30]
 
     var body: some View {
         VStack(spacing: 0) {
@@ -44,6 +49,12 @@ struct DaymarkFormView: View {
                 }
                 .pickerStyle(.segmented)
                 .labelsHidden()
+                Picker("form.field.remind", selection: $remindDays) {
+                    Text("remind.none").tag(0)
+                    ForEach(Self.remindDayOptions, id: \.self) { days in
+                        Text("remind.daysBefore \(days)").tag(days)
+                    }
+                }
             }
             .formStyle(.grouped)
         }
@@ -70,11 +81,13 @@ struct DaymarkFormView: View {
     private func save() {
         switch mode {
         case .create:
-            store.add(Daymark(name: cleanedName, date: date, repeatCycle: repeatCycle))
+            store.add(Daymark(name: cleanedName, date: date,
+                              repeatCycle: repeatCycle, remindDays: remindDays))
         case .edit(let item):
             item.name = cleanedName
             item.startDate = date
             item.repeatCycle = repeatCycle
+            item.remindDays = remindDays
             store.update(item)
         }
         onBack()
