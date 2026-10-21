@@ -1,24 +1,64 @@
 import SwiftUI
 
-/// 面板内导航路由(票 03 扩展详情/编辑)
+/// 面板内导航路由
 enum PanelRoute: Hashable {
     case create
+    case detail(UUID)
+    case edit(UUID)
 }
 
 /// 面板:点击菜单栏图标弹出的主操作入口。所有导航在面板内 push/pop,不另开窗口。
 struct PanelView: View {
+    @Environment(DaymarkStore.self) private var store
     @State private var path: [PanelRoute] = []
 
     var body: some View {
         NavigationStack(path: $path) {
-            DaymarkListView(onAdd: { path.append(.create) })
-                .navigationDestination(for: PanelRoute.self) { route in
-                    switch route {
-                    case .create:
-                        DaymarkFormView(mode: .create, onBack: { path.removeLast() })
+            DaymarkListView(
+                onAdd: { path.append(.create) },
+                onOpen: { path.append(.detail($0)) }
+            )
+            .navigationDestination(for: PanelRoute.self) { route in
+                switch route {
+                case .create:
+                    DaymarkFormView(mode: .create, onBack: pop)
+                case .detail(let id):
+                    if let item = item(with: id) {
+                        DaymarkDetailView(
+                            item: item,
+                            onEdit: { path.append(.edit(id)) },
+                            onDelete: {
+                                store.delete(item)
+                                path.removeAll()
+                            }
+                        )
+                    } else {
+                        // 数据已被删除(路由残留):安全回落到列表
+                        DaymarkListView(
+                            onAdd: { path.append(.create) },
+                            onOpen: { path.append(.detail($0)) }
+                        )
+                    }
+                case .edit(let id):
+                    if let item = item(with: id) {
+                        DaymarkFormView(mode: .edit(item), onBack: pop)
+                    } else {
+                        DaymarkListView(
+                            onAdd: { path.append(.create) },
+                            onOpen: { path.append(.detail($0)) }
+                        )
                     }
                 }
+            }
         }
         .frame(width: 320, height: 440)
+    }
+
+    private func item(with id: UUID) -> Daymark? {
+        try? store.fetchAll().first { $0.id == id }
+    }
+
+    private func pop() {
+        if path.isEmpty == false { path.removeLast() }
     }
 }

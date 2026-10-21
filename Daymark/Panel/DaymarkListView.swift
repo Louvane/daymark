@@ -1,12 +1,13 @@
 import SwiftUI
 import SwiftData
 
-/// 列表:按「最近将到」排序,每行 Emoji + 名称 + 剩余/已过天数
+/// 列表:按「最近将到」排序,每行 Emoji + 名称 + 剩余/已过天数;点行进详情
 struct DaymarkListView: View {
     @Environment(DaymarkStore.self) private var store
     @Query private var daymarks: [Daymark]
 
     let onAdd: () -> Void
+    let onOpen: (UUID) -> Void
 
     private var sorted: [Daymark] {
         DaymarkSort.upcoming(daymarks, reference: .now, calendar: DateMath.userCalendar())
@@ -57,7 +58,12 @@ struct DaymarkListView: View {
         ScrollView {
             LazyVStack(spacing: 6) {
                 ForEach(sorted, id: \.id) { item in
-                    DaymarkRow(item: item)
+                    Button {
+                        onOpen(item.id)
+                    } label: {
+                        DaymarkRow(item: item)
+                    }
+                    .buttonStyle(.plain)
                 }
             }
             .padding(.horizontal, 10)

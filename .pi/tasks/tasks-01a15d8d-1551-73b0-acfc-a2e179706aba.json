@@ -17,25 +17,25 @@
       "id": "2",
       "subject": "票02: Daymark 模型+创建与浏览(DateMath daysBetween+状态)",
       "description": "@Model 全字段;DateMath.daysBetween+状态判定(今天/未来/过去);创建表单(名称必填+日期);列表按最近将到排序,行显 Emoji 占位+名称+剩余/已过天数;SwiftData in-memory CRUD 测试;闰日/跨月/跨年测试",
-      "status": "in_progress",
+      "status": "completed",
       "activeForm": "实现创建与浏览",
       "metadata": {},
       "blocks": [],
       "blockedBy": [],
       "createdAt": 1792571339073,
-      "updatedAt": 1792571567090
+      "updatedAt": 1792572029489
     },
     {
       "id": "3",
       "subject": "票03: 面板导航:详情/编辑/删除/空态",
       "description": "列表→详情→编辑 push 导航;详情展示全部字段;编辑复用创建表单;删除确认;空态引导双语;Store 更新/删除测试",
-      "status": "pending",
+      "status": "in_progress",
       "activeForm": "实现面板导航",
       "metadata": {},
       "blocks": [],
       "blockedBy": [],
       "createdAt": 1792571339074,
-      "updatedAt": 1792571339074
+      "updatedAt": 1792572029491
     },
     {
       "id": "4",

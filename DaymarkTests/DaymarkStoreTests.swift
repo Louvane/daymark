@@ -60,5 +60,18 @@ final class DaymarkStoreTests: XCTestCase {
         }
     }
 
+    /// 删除重复调用安全(详情页删除后路由残留不会崩溃)
+    func testDeleteTwiceIsSafe() throws {
+        let store = try DaymarkStore(inMemory: true)
+        let a = Daymark(name: "A", date: .now)
+        let b = Daymark(name: "B", date: .now)
+        store.add(a)
+        store.add(b)
+
+        store.delete(a)
+        store.delete(a) // 二次删除不应崩溃或影响其他数据
+        XCTAssertEqual(try store.fetchAll().map(\.name), ["B"])
+    }
+
     static let calendar = DateMathTests.calendar
 }
