@@ -1,0 +1,35 @@
+# Swift / Xcode
+.build/
+xcuserdata/
+*.xcuserstate
+DerivedData/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcarchive
+*.ipa
+*.dmg
+
+# Swift Package Manager
+Package.resolved 除外:应用项目锁定依赖版本,应提交
+# (如未来引入 SPM 外部依赖,Package.resolved 建议提交)
+
+# CocoaPods / Carthage(本项目不用,防御性忽略)
+Pods/
+Carthage/Build/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# 编辑器
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Xcode 云构建签名(本地开发不提交)
+*.mobileprovision
+*.p12
