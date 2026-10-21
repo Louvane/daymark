@@ -22,11 +22,12 @@ struct DaymarkFormView: View {
     @State private var endDate = Date.now.addingTimeInterval(86_400)
     @State private var hasTime = false
 
-    /// 编辑模式从既有 Daymark 预填,创建模式用默认值
-    init(mode: Mode, onBack: @escaping () -> Void) {
+    /// 编辑模式从既有 Daymark 预填;创建模式可携带 daymark:// 预填载荷(票 09),其余用默认值
+    init(mode: Mode, prefill: DaymarkURLPayload? = nil, onBack: @escaping () -> Void) {
         self.mode = mode
         self.onBack = onBack
-        if case .edit(let item) = mode {
+        switch mode {
+        case .edit(let item):
             _name = State(initialValue: item.name)
             _date = State(initialValue: item.startDate)
             _repeatCycle = State(initialValue: item.repeatCycle)
@@ -36,6 +37,12 @@ struct DaymarkFormView: View {
             _isRange = State(initialValue: item.endDate != nil)
             _endDate = State(initialValue: item.endDate ?? item.startDate)
             _hasTime = State(initialValue: item.hasTime)
+        case .create:
+            if let prefill {
+                _name = State(initialValue: prefill.name ?? "")
+                _date = State(initialValue: prefill.date ?? .now)
+                _repeatCycle = State(initialValue: prefill.repeatCycle ?? .none)
+            }
         }
     }
 

@@ -4,11 +4,11 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] `xcodebuild build` 产出 Daymark.app,零警告门槛警告项
-- [ ] Info.plist:LSUIElement=true、bundle id、daymark:// scheme 占位
-- [ ] 菜单栏图标常驻,点击弹出 MenuBarExtra window 样式面板,面板含占位文案与一个禁用的 + 按钮
-- [ ] Localizable.xcstrings 建立,开发语言 zh-Hans,占位文案双语(en 翻译就位)
-- [ ] 测试 target 存在且含一个恒真冒烟测试,`xcodebuild test` 全绿
-- [ ] 提交信息引用本票编号
+- [x] `xcodebuild build` 产出 Daymark.app,零警告门槛警告项
+- [x] Info.plist:LSUIElement=true、bundle id、daymark:// scheme 占位
+- [x] 菜单栏图标常驻,点击弹出 MenuBarExtra window 样式面板,面板含占位文案与一个禁用的 + 按钮
+- [x] Localizable.xcstrings 建立,开发语言 zh-Hans,占位文案双语(en 翻译就位)
+- [x] 测试 target 存在且含一个恒真冒烟测试,`xcodebuild test` 全绿
+- [x] 提交信息引用本票编号

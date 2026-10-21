@@ -4,13 +4,13 @@
 
 **Blocked by:** 03 面板导航:详情/编辑/删除/空态
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] 创建/编辑表单加提醒选择(无/1/2/3/7/14/30 天前),详情页展示
-- [ ] 提醒触发日推导进 DateMath(发生日 - N 天),带测试
-- [ ] ReminderScheduling 协议隔离 UNUserNotificationCenter;真实实现 + 测试用假调度器(记录增删调用)
-- [ ] 全量重排:先 removeAllPending 再按当前数据加回;同一数据重排两次,假调度器看到的最终状态一致(幂等测试)
-- [ ] 重复 Daymark 只为下一次发生排提醒(依赖 04 的 nextOccurrence 若已合入;未合入则先按不重复实现,04 合入时补)
-- [ ] 删除 Daymark 时其已排提醒被撤销
-- [ ] 点通知 → 面板打开并定位到对应详情
-- [ ] 通知文案双语,含名称与"还有 N 天"
+- [x] 创建/编辑表单加提醒选择(无/1/2/3/7/14/30 天前),详情页展示
+- [x] 提醒触发日推导进 DateMath(发生日 - N 天),带测试
+- [x] ReminderScheduling 协议隔离 UNUserNotificationCenter;真实实现 + 测试用假调度器(记录增删调用)
+- [x] 全量重排:先 removeAllPending 再按当前数据加回;同一数据重排两次,假调度器看到的最终状态一致(幂等测试)
+- [x] 重复 Daymark 只为下一次发生排提醒(依赖 04 的 nextOccurrence 若已合入;未合入则先按不重复实现,04 合入时补)
+- [x] 删除 Daymark 时其已排提醒被撤销
+- [x] 点通知 → 面板打开并定位到对应详情
+- [x] 通知文案双语,含名称与"还有 N 天"

@@ -2,7 +2,7 @@ import SwiftUI
 
 /// 面板内导航路由
 enum PanelRoute: Hashable {
-    case create
+    case create(DaymarkURLPayload?)
     case detail(UUID)
     case edit(UUID)
 }
@@ -16,13 +16,13 @@ struct PanelView: View {
     var body: some View {
         NavigationStack(path: $path) {
             DaymarkListView(
-                onAdd: { path.append(.create) },
+                onAdd: { path.append(.create(nil)) },
                 onOpen: { path.append(.detail($0)) }
             )
             .navigationDestination(for: PanelRoute.self) { route in
                 switch route {
-                case .create:
-                    DaymarkFormView(mode: .create, onBack: pop)
+                case .create(let prefill):
+                    DaymarkFormView(mode: .create, prefill: prefill, onBack: pop)
                 case .detail(let id):
                     if let item = item(with: id) {
                         DaymarkDetailView(
@@ -36,7 +36,7 @@ struct PanelView: View {
                     } else {
                         // 数据已被删除(路由残留):安全回落到列表
                         DaymarkListView(
-                            onAdd: { path.append(.create) },
+                            onAdd: { path.append(.create(nil)) },
                             onOpen: { path.append(.detail($0)) }
                         )
                     }
@@ -45,7 +45,7 @@ struct PanelView: View {
                         DaymarkFormView(mode: .edit(item), onBack: pop)
                     } else {
                         DaymarkListView(
-                            onAdd: { path.append(.create) },
+                            onAdd: { path.append(.create(nil)) },
                             onOpen: { path.append(.detail($0)) }
                         )
                     }
@@ -59,6 +59,12 @@ struct PanelView: View {
             guard let id = newID else { return }
             path = [.detail(id)]
             router.pendingDetailID = nil
+        }
+        .onChange(of: router.pendingCreatePayload) { _, payload in
+            // 链接唤起 → 面板打开后落在预填创建表单
+            guard payload != nil else { return }
+            path = [.create(payload)]
+            router.pendingCreatePayload = nil
         }
     }
 

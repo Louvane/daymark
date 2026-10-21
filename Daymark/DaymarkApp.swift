@@ -19,6 +19,10 @@ struct DaymarkApp: App {
             _store = State(initialValue: created)
             // 应用启动全量重排提醒(票 05:启动与数据变更时全量重排)
             Task { await created.rescheduleReminders() }
+            // 快速创建窗与存储同源(daymark:// 唤起用)
+            Task { @MainActor in
+                QuickCreateWindowController.shared.attach(store: created)
+            }
         } catch {
             // 容器初始化失败属于不可恢复错误:无存储则应用无意义
             fatalError("无法初始化 SwiftData 容器:\(error)")
@@ -57,6 +61,17 @@ struct DaymarkApp: App {
 final class AppDelegate: NSObject, NSApplicationDelegate {
     let router = AppRouter()
     private var tapHandler: NotificationTapHandler?
+
+    // daymark://create?name=…&date=…&repeat=… 唤起:解析预填创建表单
+    func application(_ application: NSApplication, open urls: [URL]) {
+        for url in urls {
+            // 非法参数在解析层安全降级为 nil 字段(空表单)
+            let payload = DaymarkURLParser.parse(url, calendar: .current)
+            router.pendingCreatePayload = payload
+            QuickCreateWindowController.shared.show(prefill: payload)
+        }
+        NSApp.activate(ignoringOtherApps: true)
+    }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         let handler = NotificationTapHandler { [weak router] id in

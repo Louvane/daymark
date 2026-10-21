@@ -4,11 +4,11 @@
 
 **Blocked by:** 08 偏好设置(传递依赖:02~07 全部完成)
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] daymark://create?name=…&date=…&repeat=… 解析:预填创建表单并打开面板;参数非法时安全降级为空表单
-- [ ] URL 解析为纯函数(可测),测试覆盖正常/缺参/乱码/恶意长度
-- [ ] README:简介、截图位、功能清单、构建步骤(xcodebuild)、Roadmap(v1.5/v2 引用 CONTEXT.md 交付阶段)、致谢 Moment
-- [ ] LICENSE:MIT(版权人 Louvane)
-- [ ] 版本号 1.0.0、tag 规范、Release 附件构建说明写入 README
-- [ ] 全部验收清单(.scratch/daymark-v1/issues/01~09)逐项复查勾选
+- [x] daymark://create?name=…&date=…&repeat=… 解析:预填创建表单并打开面板;参数非法时安全降级为空表单
+- [x] URL 解析为纯函数(可测),测试覆盖正常/缺参/乱码/恶意长度
+- [x] README:简介、截图位、功能清单、构建步骤(xcodebuild)、Roadmap(v1.5/v2 引用 CONTEXT.md 交付阶段)、致谢 Moment
+- [x] LICENSE:MIT(版权人 Louvane)
+- [x] 版本号 1.0.0、tag 规范、Release 附件构建说明写入 README
+- [x] 全部验收清单(.scratch/daymark-v1/issues/01~09)逐项复查勾选

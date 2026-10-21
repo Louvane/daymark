@@ -89,25 +89,25 @@
       "id": "8",
       "subject": "票08: 偏好设置(默认提醒时刻/开机启动/关于页)",
       "description": "Settings 场景+齿轮入口;默认提醒时刻 UserDefaults+改动重排(假调度器验证);SMAppService 开机启动状态同步;关于页(版本/GitHub/MIT/受 Moment 启发);双语",
-      "status": "in_progress",
+      "status": "completed",
       "activeForm": "实现偏好设置",
       "metadata": {},
       "blocks": [],
       "blockedBy": [],
       "createdAt": 1792571339079,
-      "updatedAt": 1792574066892
+      "updatedAt": 1792574291852
     },
     {
       "id": "9",
       "subject": "票09: 收尾(URL scheme 解析/README/LICENSE/1.0.0)",
       "description": "daymark://create?name&date&repeat 纯函数解析+测试(正常/缺参/乱码/超长);README(简介/构建/Roadmap/致谢);MIT LICENSE(Louvane);版本 1.0.0+tag+打包说明;复查勾选全部票验收项",
-      "status": "pending",
+      "status": "in_progress",
       "activeForm": "收尾发布面",
       "metadata": {},
       "blocks": [],
       "blockedBy": [],
       "createdAt": 1792571339081,
-      "updatedAt": 1792571339081
+      "updatedAt": 1792574291853
     },
     {
       "id": "10",
