@@ -1,4 +1,5 @@
 import Foundation
+import os.log
 import UserNotifications
 
 /// 提醒调度接缝(领域接缝 3):隔离 UNUserNotificationCenter,测试用假实现
@@ -13,9 +14,17 @@ struct UserNotificationScheduler: ReminderScheduling {
     /// 通知 userInfo 中携带日标 id 的 key(点通知定位详情)
     static let payloadIDKey = "daymarkID"
 
+    private static let log = Logger(subsystem: "app.louvane.Daymark", category: "reminders")
+
     func requestAuthorizationIfNeeded() async {
         let center = UNUserNotificationCenter.current()
-        _ = try? await center.requestAuthorization(options: [.alert, .sound])
+        do {
+            let granted = try await center.requestAuthorization(options: [.alert, .sound])
+            Self.log.info("通知授权结果 granted=\(granted)")
+        } catch {
+            // 吞错误会导致「为什么不弹授权框」无从排查,必须落日志
+            Self.log.error("通知授权请求失败: \(error, privacy: .public)")
+        }
     }
 
     func removeAllPending() async {
