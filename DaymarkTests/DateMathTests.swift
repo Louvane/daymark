@@ -181,6 +181,21 @@ extension DateMathTests {
                        Self.date(2026, 12, 31, hour: 23))
     }
 
+    // 回归(UI 快照实测发现):未来锚日 + 重复 → 不多滚一周期
+    func testNextOccurrenceFutureAnchorStaysPut() {
+        let cal = Self.calendar
+        let anchor = Self.date(2026, 12, 24, hour: 9)
+        XCTAssertEqual(DateMath.nextOccurrence(anchor: anchor, repeat: .yearly,
+                                               reference: Self.date(2026, 10, 22), calendar: cal), anchor)
+        XCTAssertEqual(DateMath.nextOccurrence(anchor: anchor, repeat: .weekly,
+                                               reference: Self.date(2026, 10, 22), calendar: cal), anchor)
+        XCTAssertEqual(DateMath.nextOccurrence(anchor: anchor, repeat: .monthly,
+                                               reference: Self.date(2026, 10, 22), calendar: cal), anchor)
+        let state = DaymarkStatus.state(anchor: anchor, repeat: .yearly,
+                                        reference: Self.date(2026, 10, 22), calendar: cal)
+        XCTAssertEqual(state.phase, .upcoming(daysLeft: 63))
+    }
+
     // 集成:已过的重复 Daymark 显示「距下次还有 N 天」
     func testStateRepeatingPastShowsUpcoming() {
         let cal = Self.calendar

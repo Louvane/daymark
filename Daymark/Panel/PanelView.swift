@@ -50,6 +50,13 @@ struct PanelView: View {
             }
         }
         .frame(width: 320, height: 440)
+        .overlay(alignment: .top) {
+            // 顶部箭头:指向菜单栏图标(内容层绘制;MenuBarExtra 系统窗不带箭头)
+            PanelCaretShape()
+                .fill(.ultraThinMaterial)
+                .overlay(PanelCaretShape().stroke(Color(nsColor: .separatorColor).opacity(0.4), lineWidth: 0.5))
+                .frame(width: 20, height: 10)
+        }
         .onChange(of: router.pendingDetailID) { _, newID in
             // 通知点击 → 面板打开后直接落在对应详情
             guard let id = newID else { return }

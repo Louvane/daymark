@@ -60,32 +60,40 @@ struct DaymarkFormView: View {
             header
             Divider()
             ScrollView {
-                VStack(spacing: 0) {
-                    emojiRow
-                    Divider().padding(.leading, 14)
-                    colorRow
-                    Divider().padding(.leading, 14)
-                    nameSection
-                    Divider().padding(.leading, 14)
-                    formRows
-                }
-                .padding(.vertical, 6)
-                if showsEmojiPicker {
-                    VStack(spacing: 8) {
-                        EmojiPickerView(selection: $emoji, onDone: { showsEmojiPicker = false })
-                    }
-                    .padding(12)
-                    .background(.quaternary.opacity(0.35), in: RoundedRectangle(cornerRadius: 10))
-                    .padding(.horizontal, 14)
-                    .padding(.bottom, 10)
-                }
+                content
             }
         }
+        .animation(.easeOut(duration: 0.18), value: showsEmojiPicker)
         .navigationBarBackButtonHidden(true)
     }
 
+    /// 表单内容(抽离以便快照测试直接渲染)
+    @ViewBuilder
+    var content: some View {
+        VStack(spacing: 0) {
+            emojiRow
+            Divider().padding(.leading, 14)
+            colorRow
+            Divider().padding(.leading, 14)
+            nameSection
+            Divider().padding(.leading, 14)
+            formRows
+        }
+        .padding(.vertical, 6)
+        if showsEmojiPicker {
+            VStack(spacing: 8) {
+                EmojiPickerView(selection: $emoji, onDone: { showsEmojiPicker = false })
+            }
+            .padding(12)
+            .background(.quaternary.opacity(0.35), in: RoundedRectangle(cornerRadius: 10))
+            .padding(.horizontal, 14)
+            .padding(.bottom, 10)
+            .transition(.opacity.combined(with: .scale(0.96, anchor: .top)))
+        }
+    }
+
     /// 头部:← | 标题居中 | ✓ 保存
-    private var header: some View {
+    var header: some View {
         ZStack {
             Text(LocalizedStringKey(mode == .create ? "form.title.create" : "form.title.edit"))
                 .font(.headline)
@@ -93,7 +101,7 @@ struct DaymarkFormView: View {
                 Button(action: onBack) {
                     Image(systemName: "chevron.left")
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(HoverIconButtonStyle())
                 .help(Text("common.back"))
                 Spacer()
                 Button(action: save) {
@@ -101,7 +109,7 @@ struct DaymarkFormView: View {
                         .font(.body.bold())
                         .foregroundStyle(cleanedName.isEmpty ? Color.secondary : Color.accentColor)
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(HoverIconButtonStyle())
                 .disabled(cleanedName.isEmpty)
                 .help(Text("form.action.save"))
             }
@@ -129,7 +137,7 @@ struct DaymarkFormView: View {
                     .frame(width: 26, height: 26)
                     .background(.quaternary.opacity(0.6), in: Circle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(HoverIconButtonStyle())
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 10)

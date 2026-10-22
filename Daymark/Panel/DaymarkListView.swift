@@ -128,6 +128,7 @@ struct DaymarkListView: View {
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, 4)
+                .animation(.easeOut(duration: 0.15), value: sorted.map(\.id))
             }
         }
     }
@@ -160,6 +161,8 @@ struct DaymarkListView: View {
 /// 列表行(Moment 式):Emoji 左 · 名称/元信息中 · 大数字+单位右。
 /// 渲染只用值快照,删除后模型失效也不会导致重渲染崩溃。
 struct DaymarkListRow: View {
+    @State private var hovering = false
+
     struct Snapshot {
         let name: String
         let emoji: String
@@ -207,8 +210,10 @@ struct DaymarkListRow: View {
     }
 
     var body: some View {
+        Group {
         if confirmingDelete {
             confirmBar
+                .transition(.opacity.combined(with: .move(edge: .top)))
         } else {
             Button(action: onOpen) {
                 HStack(spacing: 10) {
@@ -238,6 +243,8 @@ struct DaymarkListRow: View {
                 Button(role: .destructive, action: onDeleteRequest) { Text("detail.action.delete") }
             }
         }
+        }
+        .animation(.easeOut(duration: 0.15), value: confirmingDelete)
     }
 
     /// 内联确认条:替代系统 confirmationDialog(后者会令面板失焦自动关闭)

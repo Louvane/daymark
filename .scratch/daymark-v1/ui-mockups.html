@@ -10,6 +10,25 @@
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:var(--bg);font-family:-apple-system,"PingFang SC",sans-serif;color:var(--ink);padding:32px}
+  /* ── 交互规范:过渡与反馈 ──
+     hover 120ms ease-out · 按压 scale .96 · 开关 180ms · 行出现 150ms fade+slide
+     面板弹出 spring(scale .92→1) · 内联确认条 150ms 高度+透明度 */
+  .phone{animation:pop .24s cubic-bezier(.2,.9,.3,1.15)}
+  @keyframes pop{from{transform:scale(.93);opacity:0}to{transform:scale(1);opacity:1}}
+  .row,.frow,.setrow,.emoji-row{transition:background-color .12s ease}
+  .row:not(.confirm):not(.hl):hover{background:rgba(0,0,0,.045)}
+  .ic{border-radius:6px;padding:3px;transition:background-color .12s ease;cursor:pointer}
+  .ic:hover{background:rgba(0,0,0,.08)}
+  .btn,.facebtn{transition:transform .1s ease,filter .12s ease;cursor:pointer}
+  .btn:active,.facebtn:active{transform:scale(.94);filter:brightness(.93)}
+  .switch{cursor:pointer;transition:background-color .18s ease}
+  .switch::after{transition:left .18s cubic-bezier(.2,.8,.2,1)}
+  .em-picker{animation:unfold .18s ease-out;transform-origin:top center}
+  @keyframes unfold{from{opacity:0;transform:scaleY(.9)}to{opacity:1;transform:scaleY(1)}}
+  .confirmbar,.row.confirm{animation:slidein .15s ease-out}
+  @keyframes slidein{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+  /* 面板顶部箭头:指向菜单栏图标 */
+  .notch{position:absolute;top:0;left:50%;margin-left:-9px;width:18px;height:9px;background:var(--panel);clip-path:polygon(0 100%,50% 0,100% 100%);z-index:3}
   h1{font-size:22px;margin-bottom:4px}
   .sub{color:var(--ink2);font-size:13px;margin-bottom:28px}
   h2{font-size:15px;margin:36px 0 12px;color:#333}
@@ -88,7 +107,7 @@
   .confirmbar{display:flex;align-items:center;gap:8px;margin:10px 14px;background:#fdecec;border-radius:10px;padding:8px 10px;font-size:12.5px}
   .confirmbar .q{flex:1;color:var(--red);font-weight:600}
   /* 设置窗口 */
-  .win{width:420px;background:#fff;border-radius:10px;box-shadow:0 10px 34px rgba(0,0,0,.18);overflow:hidden;flex-shrink:0}
+  .win{width:420px;height:248px;background:#fff;border-radius:10px;box-shadow:0 10px 34px rgba(0,0,0,.18);overflow:hidden;flex-shrink:0}
   .winbar{height:38px;display:flex;align-items:center;padding:0 12px;border-bottom:1px solid var(--line);position:relative}
   .dot-t{width:11px;height:11px;border-radius:50%;margin-right:7px}
   .winbar .tabs{position:absolute;right:10px;display:flex;gap:4px}
@@ -131,7 +150,7 @@
 <h2>① 面板 · 列表(最近优先)</h2>
 <div class="grid">
   <div>
-    <div class="phone" style="position:relative">
+    <div class="phone" style="position:relative"><i class="notch"></i>
       <div class="hdr">
         <span class="left"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.1-.4.1-.8.1-1.2z"/></svg></span></span>
         <span class="title wordmark">DAYMARK</span>
@@ -173,7 +192,7 @@
   </div>
 
   <div>
-    <div class="phone" style="position:relative">
+    <div class="phone" style="position:relative"><i class="notch"></i>
       <div class="hdr">
         <span class="left"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.1-.4.1-.8.1-1.2z"/></svg></span></span>
         <span class="title wordmark">DAYMARK</span>
@@ -195,7 +214,7 @@
   </div>
 
   <div>
-    <div class="phone" style="position:relative">
+    <div class="phone" style="position:relative"><i class="notch"></i>
       <div class="hdr">
         <span class="left"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.1-.4.1-.8.1-1.2z"/></svg></span></span>
         <span class="title wordmark">DAYMARK</span>
@@ -213,7 +232,7 @@
 <h2>② 详情页(hero 式)</h2>
 <div class="grid">
   <div>
-    <div class="phone">
+    <div class="phone"><i class="notch"></i>
       <div class="hdr">
         <span class="left"><span class="ic"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></span></span>
         <span class="title">详情</span>
@@ -238,7 +257,7 @@
     <div class="cap">④ 详情:← | 详情居中 | 编辑+🗑 · 菱形 Emoji → 名称 → 大数字块 → 字段卡</div>
   </div>
   <div>
-    <div class="phone">
+    <div class="phone"><i class="notch"></i>
       <div class="hdr">
         <span class="left"><span class="ic"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></span></span>
         <span class="title">详情</span>
@@ -270,7 +289,7 @@
 </div>
 <div class="grid">
   <div>
-    <div class="phone">
+    <div class="phone"><i class="notch"></i>
       <div class="hdr">
         <span class="left"><span class="ic"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></span></span>
         <span class="title">新建日标</span>
@@ -294,7 +313,7 @@
   </div>
 
   <div>
-    <div class="phone">
+    <div class="phone"><i class="notch"></i>
       <div class="hdr">
         <span class="left"><span class="ic"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></span></span>
         <span class="title">编辑日标</span>
@@ -316,7 +335,7 @@
   </div>
 
   <div>
-    <div class="phone">
+    <div class="phone"><i class="notch"></i>
       <div class="hdr">
         <span class="left"><span class="ic"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></span></span>
         <span class="title">新建日标</span>
@@ -377,3 +396,38 @@
 
 </body>
 </html>
+
+<script>
+// 开关点击
+document.querySelectorAll('.switch').forEach(s=>{
+  s.addEventListener('click',()=>s.classList.toggle('on'));
+});
+// 右键行:菜单出现在鼠标处(真实行为);点其他处关闭
+const ctxProto = document.querySelectorAll('.phone')[0];
+const menu = ctxProto.querySelector('.ctx');
+if(menu){
+  menu.style.display='none';
+  ctxProto.querySelectorAll('.row:not(.confirm)').forEach(r=>{
+    r.addEventListener('contextmenu',e=>{
+      e.preventDefault();
+      const rect = ctxProto.getBoundingClientRect();
+      menu.style.display='block';
+      menu.style.left = Math.min(e.clientX-rect.left, 320-160)+'px';
+      menu.style.top  = Math.min(e.clientY-rect.top,  440-120)+'px';
+    });
+  });
+  document.addEventListener('click',e=>{ if(!menu.contains(e.target)) menu.style.display='none'; });
+  menu.querySelectorAll('div').forEach(mi=>mi.addEventListener('click',()=>menu.style.display='none'));
+}
+// 表单帧:点大 Emoji/☺ 展开选择器
+const formPhone = document.querySelectorAll('.phone')[5];
+if(formPhone){
+  const picker = formPhone.querySelector('.em-picker');
+  if(picker){
+    picker.style.display='none';
+    formPhone.querySelectorAll('.emoji-big,.facebtn').forEach(el=>{
+      el.addEventListener('click',()=>{ picker.style.display = picker.style.display==='none'?'block':'none'; });
+    });
+  }
+}
+</script>

@@ -52,18 +52,24 @@ struct DaymarkDetailView: View {
             header
             Divider()
             ScrollView {
-                VStack(spacing: 16) {
-                    if confirmingDelete {
-                        confirmBar
-                    }
-                    hero
-                    numberBlock
-                    fieldsCard
-                }
-                .padding(16)
+                content
             }
         }
         .navigationBarBackButtonHidden(true)
+    }
+
+    /// 滚动内容(抽离以便快照测试直接渲染,绕过 ScrollView 的 ImageRenderer 限制)
+    var content: some View {
+        VStack(spacing: 16) {
+            if confirmingDelete {
+                confirmBar
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+            }
+            hero
+            numberBlock
+            fieldsCard
+        }
+        .padding(16)
     }
 
     /// 内联确认条(替代系统 confirmationDialog)
@@ -90,7 +96,7 @@ struct DaymarkDetailView: View {
     }
 
     /// 头部:← 返回 | 标题居中 | 编辑(文字)+ 删除(红)
-    private var header: some View {
+    var header: some View {
         ZStack {
             Text("detail.title")
                 .font(.headline)
@@ -106,14 +112,14 @@ struct DaymarkDetailView: View {
                         Text("detail.action.edit")
                             .font(.callout)
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(HoverIconButtonStyle())
                     Button {
-                        confirmingDelete = true
+                        withAnimation(.easeOut(duration: 0.15)) { confirmingDelete = true }
                     } label: {
                         Image(systemName: "trash")
                             .foregroundStyle(.red)
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(HoverIconButtonStyle())
                     .help(Text("detail.action.delete"))
                 }
             }

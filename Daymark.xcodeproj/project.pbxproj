@@ -17,10 +17,12 @@
 		39B8A95864F254A04B2F982F /* SmokeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2545B87F88B7D7977ECF2AA6 /* SmokeTests.swift */; };
 		4253C0AE32B73EB3F477C10A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 216A116D552D838931F1A800 /* Assets.xcassets */; };
 		44E0E14E71E2F795989ED511 /* EmojiCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EFBB9A0C39193D8A891E71 /* EmojiCatalog.swift */; };
+		4B7A40C3EDC9893C5E7B6D66 /* HoverIconButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C919B130B655EE757D6BC2E7 /* HoverIconButtonStyle.swift */; };
 		4D500929D00B4378D30B61F0 /* DaymarkApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DBFA2EA959C8B177C7D8F95 /* DaymarkApp.swift */; };
 		663DA222945C92A9F1FDE807 /* EmojiPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FDDFA34476624C1FC22748 /* EmojiPickerView.swift */; };
 		752B460B09B160D26194C448 /* NotificationRouting.swift in Sources */ = {isa = PBXBuildFile; fileRef = B495990DC550968B746B961E /* NotificationRouting.swift */; };
 		7C0E4BAA510918394D681BB3 /* CountdownText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372DF11EDF859313D9FE174D /* CountdownText.swift */; };
+		7C822CACA3FD646B21321D4D /* UISnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91BF98219574A5CC9B98719 /* UISnapshotTests.swift */; };
 		872BCA8DF5268B37AD7AAA1F /* DaymarkStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92AFC5FB0348102CB2E8B52F /* DaymarkStatus.swift */; };
 		909B3EEFDF44C0F3E68C32CE /* ReminderPlanning.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE92414DF78C73CF81E743D3 /* ReminderPlanning.swift */; };
 		98BBF0C72002CFB051E16F8A /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E3B772AC23C37972AC46DC /* SettingsTests.swift */; };
@@ -77,6 +79,8 @@
 		BA8FB58A69590845B383A7AB /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		C00DF65B412622BF1D131A67 /* EmojiCatalog.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = EmojiCatalog.json; sourceTree = "<group>"; };
 		C45D67256EBF98769007380F /* DateMathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateMathTests.swift; sourceTree = "<group>"; };
+		C919B130B655EE757D6BC2E7 /* HoverIconButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoverIconButtonStyle.swift; sourceTree = "<group>"; };
+		C91BF98219574A5CC9B98719 /* UISnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISnapshotTests.swift; sourceTree = "<group>"; };
 		D853763C8B7BA1420652BADA /* AppearanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceTests.swift; sourceTree = "<group>"; };
 		E83493A89B1BCD0BA84EAE7C /* DaymarkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DaymarkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC3250FAAF138DC6A3AD594D /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
@@ -164,6 +168,7 @@
 				31F3532E4B0612B196A5E427 /* DaymarkFormView.swift */,
 				6C3F2746644EB0D9DE365203 /* DaymarkListView.swift */,
 				39FDDFA34476624C1FC22748 /* EmojiPickerView.swift */,
+				C919B130B655EE757D6BC2E7 /* HoverIconButtonStyle.swift */,
 				F2F35C2CDF1E2DF76CA76F88 /* PanelView.swift */,
 				BA8FB58A69590845B383A7AB /* SettingsView.swift */,
 			);
@@ -193,6 +198,7 @@
 				68E71726DA02400AD3CB2350 /* ReminderTests.swift */,
 				43E3B772AC23C37972AC46DC /* SettingsTests.swift */,
 				2545B87F88B7D7977ECF2AA6 /* SmokeTests.swift */,
+				C91BF98219574A5CC9B98719 /* UISnapshotTests.swift */,
 			);
 			path = DaymarkTests;
 			sourceTree = "<group>";
@@ -306,6 +312,7 @@
 				E195991E42CC3AB9CC26007E /* DaymarkURLParser.swift in Sources */,
 				44E0E14E71E2F795989ED511 /* EmojiCatalog.swift in Sources */,
 				663DA222945C92A9F1FDE807 /* EmojiPickerView.swift in Sources */,
+				4B7A40C3EDC9893C5E7B6D66 /* HoverIconButtonStyle.swift in Sources */,
 				752B460B09B160D26194C448 /* NotificationRouting.swift in Sources */,
 				EAAD222D356DD0EACC19E788 /* PanelView.swift in Sources */,
 				909B3EEFDF44C0F3E68C32CE /* ReminderPlanning.swift in Sources */,
@@ -326,6 +333,7 @@
 				D2721A77B0EB35E59504DB82 /* ReminderTests.swift in Sources */,
 				98BBF0C72002CFB051E16F8A /* SettingsTests.swift in Sources */,
 				39B8A95864F254A04B2F982F /* SmokeTests.swift in Sources */,
+				7C822CACA3FD646B21321D4D /* UISnapshotTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

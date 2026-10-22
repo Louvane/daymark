@@ -49,6 +49,9 @@ enum DateMath {
         // 参考日恰好是发生日当天 → 今天就是发生日
         if calendar.isDate(anchor, inSameDayAs: referenceDay) { return anchor }
 
+        // 锚日本身已 ≥ 参考日(未来)→ 直接就是下一次发生,不多滚一周期
+        if calendar.startOfDay(for: anchor) >= referenceDay { return anchor }
+
         // k = 1, 2, 3… 从原锚日推周期,第一个 ≥ 今天的即下一次发生
         for k in 1...12_000 {
             guard let candidate = step(anchor, by: `repeat`, units: k, calendar: calendar) else { continue }
