@@ -100,15 +100,17 @@ final class StatusItemPanelController: NSObject, NSWindowDelegate {
         statusItem?.button?.highlight(false)
     }
 
-    /// 图标中轴线正对面板中线:面板中心 x = 图标中心 x(夹钳到屏幕内),紧贴菜单栏下方
+    /// 图标中轴线正对面板中线:以辅助功能框为准(与渲染出的高亮胶囊一致;
+    /// button.frame 与其存在内边距偏差,实测约 7px),紧贴菜单栏下方
     private func positionPanel(under button: NSStatusBarButton,
                                in buttonWindow: NSWindow, on screen: NSScreen) {
-        let iconMidX = buttonWindow.frame.minX + button.frame.midX
-        let menuBarBottomY = buttonWindow.frame.minY
+        let axFrame = button.accessibilityFrame()
+        let iconMidX = axFrame.midX
+        let menuBarBottomY = axFrame.minY
         let size = panel.frame.size
         let x = max(screen.frame.minX + 4,
                     min(iconMidX - size.width / 2, screen.frame.maxX - size.width - 4))
-        let y = menuBarBottomY - 4 - size.height
+        let y = menuBarBottomY - 2 - size.height
         panel.setFrameOrigin(NSPoint(x: x, y: y))
     }
 

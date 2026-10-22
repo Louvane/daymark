@@ -19,25 +19,28 @@ struct EmojiPickerView: View {
                     .controlSize(.small)
             }
 
-            // 常用区
+            // 常用区(横向滚动)
             if !catalog.frequent.isEmpty {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 2) {
                         emojiButtons(catalog.frequent, selected: selection) { selection = $0 }
                     }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
+                .frame(height: 32)
             }
 
-            // 分类切换
+            // 分类切换:菜单式(9 类分段控件的固有宽超过面板,会撑破表单布局)
             Picker("emoji.category.title", selection: $selectedCategoryID) {
                 ForEach(catalog.categories) { category in
                     Text(LocalizedStringKey(EmojiCatalog.labelKey(for: category)))
                         .tag(category.id)
                 }
             }
-            .pickerStyle(.segmented)
+            .pickerStyle(.menu)
             .labelsHidden()
             .controlSize(.small)
+            .frame(maxWidth: .infinity, alignment: .trailing)
 
             // 当前分类网格
             if let category = catalog.categories.first(where: { $0.id == selectedCategoryID }) {

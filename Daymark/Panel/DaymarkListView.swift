@@ -15,6 +15,21 @@ struct DaymarkListView: View {
 
     /// 右键删除的待确认条目
     @State private var pendingDelete: Daymark?
+    /// 自绘排序下拉(NSMenu 桥接在非激活面板里点击无效,故用 SwiftUI 自绘)
+    @State private var showsSortMenu = false
+    /// 手动排序拖拽:实时让位(live reorder)。非激活面板里系统 List 拖放无效,自实现手势。
+    @State private var dragItemID: UUID?
+    @State private var dragInitialIndex = 0
+    @State private var dragCurrentIndex = 0
+    @State private var dragTranslation: CGFloat = 0
+    @State private var dragOrder: [Daymark] = []
+    private let manualRowHeight: CGFloat = 50
+
+    private var isDragging: Bool { dragItemID != nil }
+    /// 拖拽行的视觉位移:手指位移扣除已让位的行数 × 行高,保证行始终跟手
+    private var dragVisualOffset: CGFloat {
+        dragTranslation - CGFloat(dragCurrentIndex - dragInitialIndex) * manualRowHeight
+    }
 
     private var sortMode: DaymarkSortMode {
         settings.sortMode
@@ -39,6 +54,60 @@ struct DaymarkListView: View {
                 list
             }
         }
+        .overlay {
+            if showsSortMenu {
+                // 显式 topTrailing ZStack:否则内层 ViewBuilder 默认居中,下拉会跑到面板中间
+                ZStack(alignment: .topTrailing) {
+                    Color.clear
+                        .contentShape(Rectangle())
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .onTapGesture {
+                            withAnimation(.easeOut(duration: 0.12)) { showsSortMenu = false }
+                        }
+                    sortDropdown
+                        .padding(.trailing, 14)
+                        .padding(.top, 2)
+                }
+            }
+        }
+    }
+
+    /// 排序下拉(锚定排序图标下方,当前项带 ✓)
+    private var sortDropdown: some View {
+        VStack(spacing: 2) {
+            sortOption(.upcoming, Text("list.sort.upcoming"))
+            sortOption(.manual, Text("list.sort.manual"))
+        }
+        .padding(6)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 10))
+        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(nsColor: .separatorColor).opacity(0.4)))
+        .shadow(color: .black.opacity(0.15), radius: 8, y: 3)
+        .transition(.opacity.combined(with: .move(edge: .top)))
+    }
+
+    private func sortOption(_ mode: DaymarkSortMode, _ label: Text) -> some View {
+        Button {
+            settings.sortMode = mode
+            withAnimation(.easeOut(duration: 0.15)) { showsSortMenu = false }
+        } label: {
+            HStack {
+                label
+                Spacer()
+                if sortMode == mode {
+                    Image(systemName: "checkmark")
+                        .font(.caption)
+                }
+            }
+            .font(.callout)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .background(
+            sortMode == mode ? Color.primary.opacity(0.06) : Color.clear,
+            in: RoundedRectangle(cornerRadius: 6)
+        )
     }
 
     /// 面板头部:齿轮左 · 品牌字标居中 · 排序/+ 右(Moment 式三段)
@@ -54,22 +123,18 @@ struct DaymarkListView: View {
                 .help(Text("list.settings.help"))
                 Spacer()
                 HStack(spacing: 10) {
-                    Menu {
-                        Picker("list.sort.mode", selection: sortModeBinding) {
-                            Text("list.sort.upcoming").tag(DaymarkSortMode.upcoming)
-                            Text("list.sort.manual").tag(DaymarkSortMode.manual)
-                        }
-                        .pickerStyle(.inline)
+                    Button {
+                        withAnimation(.easeOut(duration: 0.15)) { showsSortMenu.toggle() }
                     } label: {
                         Image(systemName: "arrow.up.arrow.down")
                     }
-                    .menuStyle(.borderlessButton)
-                    .fixedSize()
+                    .buttonStyle(HoverIconButtonStyle())
+                    .help(Text("list.sort.mode"))
                     Button(action: onAdd) {
                         Image(systemName: "plus")
                             .font(.body.bold())
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(HoverIconButtonStyle())
                     .help(Text("list.add.help"))
                 }
             }
@@ -80,11 +145,6 @@ struct DaymarkListView: View {
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
-    }
-
-    /// 排序偏好绑定(AppSettings 统一持久化通道)
-    private var sortModeBinding: Binding<DaymarkSortMode> {
-        Binding(get: { settings.sortMode }, set: { settings.sortMode = $0 })
     }
 
     private var emptyState: some View {
@@ -100,32 +160,65 @@ struct DaymarkListView: View {
         .padding(20)
     }
 
-    /// 手动模式用原生 List 拿拖拽;最近优先用轻量 ScrollView + 细分隔线
+    /// 两种模式同一容器;拖拽期间渲染 dragOrder,其他行实时让位
     @ViewBuilder
     private var list: some View {
-        if sortMode == .manual {
-            List {
-                ForEach(sorted, id: \.id) { item in
+        ScrollView(showsIndicators: false) {
+            LazyVStack(spacing: 0) {
+                let order = isDragging ? dragOrder : sorted
+                ForEach(order, id: \.id) { item in
                     row(item)
+                        .scaleEffect(dragItemID == item.id ? 1.02 : 1)
+                        .offset(y: dragItemID == item.id ? dragVisualOffset : 0)
+                        .zIndex(dragItemID == item.id ? 1 : 0)
+                        .shadow(color: dragItemID == item.id ? .black.opacity(0.22) : .clear,
+                                radius: dragItemID == item.id ? 10 : 0, y: 4)
+                        .gesture(sortMode == .manual && !isDragging ? dragGesture(item) : nil)
+                    Divider().padding(.leading, 46)
                 }
-                .onMove(perform: moveItems)
-                .listRowSeparator(.visible)
             }
-            .listStyle(.plain)
-            .scrollContentBackground(.hidden)
-        } else {
-            ScrollView {
-                LazyVStack(spacing: 0) {
-                    ForEach(sorted, id: \.id) { item in
-                        row(item)
-                        Divider().padding(.leading, 46)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 4)
+            .animation(.spring(response: 0.28, dampingFraction: 0.8), value: dragOrder.map(\.id))
+            .animation(.easeOut(duration: 0.15), value: sorted.map(\.id))
+        }
+    }
+
+    /// 拖动 ≥8pt 抬起;位移每跨过一行高,其余行实时让位;松手落定并持久化
+    private func dragGesture(_ item: Daymark) -> some Gesture {
+        DragGesture(minimumDistance: 8, coordinateSpace: .local)
+            .onChanged { value in
+                if dragItemID == nil {
+                    dragItemID = item.id
+                    dragInitialIndex = sorted.firstIndex { $0.id == item.id } ?? 0
+                    dragCurrentIndex = dragInitialIndex
+                    dragOrder = sorted
+                } else if dragItemID == item.id {
+                    dragTranslation = value.translation.height
+                    let count = dragOrder.count
+                    let target = min(max(dragInitialIndex + Int((dragTranslation / manualRowHeight).rounded()),
+                                         0), count - 1)
+                    if target != dragCurrentIndex {
+                        withAnimation(.spring(response: 0.28, dampingFraction: 0.8)) {
+                            dragOrder.move(fromOffsets: IndexSet(integer: dragCurrentIndex),
+                                           toOffset: target > dragCurrentIndex ? target + 1 : target)
+                            dragCurrentIndex = target
+                        }
                     }
                 }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 4)
-                .animation(.easeOut(duration: 0.15), value: sorted.map(\.id))
             }
-        }
+            .onEnded { _ in
+                defer {
+                    dragItemID = nil
+                    dragInitialIndex = 0
+                    dragCurrentIndex = 0
+                    dragTranslation = 0
+                    dragOrder = []
+                }
+                guard dragItemID != nil,
+                      dragOrder.map(\.id) != sorted.map(\.id) else { return }
+                DaymarkSort.applyManualOrder(dragOrder) { store.save() }
+            }
     }
 
     private func row(_ item: Daymark) -> some View {
@@ -145,12 +238,6 @@ struct DaymarkListView: View {
         )
     }
 
-    /// 拖拽排序:按新顺序重写 sortWeight 并持久化
-    private func moveItems(from source: IndexSet, to destination: Int) {
-        var items = sorted
-        items.move(fromOffsets: source, toOffset: destination)
-        DaymarkSort.applyManualOrder(items) { store.save() }
-    }
 }
 
 /// 列表行(Moment 式):Emoji 左 · 名称/元信息中 · 大数字+单位右。

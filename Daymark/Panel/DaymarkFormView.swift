@@ -59,7 +59,7 @@ struct DaymarkFormView: View {
         VStack(spacing: 0) {
             header
             Divider()
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 content
             }
         }

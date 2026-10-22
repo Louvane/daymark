@@ -144,6 +144,26 @@
 ② 表单/设置行统一「标签左 · 控件右」,开关为右侧 switch,两个下拉框统一宽 118px 右对齐;
 ③ 分割线:表单/详情左缩进 14px,列表左缩进 46px(避开 Emoji);
 ④ 面板背景保持系统半透明材质;
+⑤ 删除确认一律内联条(红底),不用系统弹层;
+⑥ <b>行 hover</b>:鼠标所在行背景 rgba(0,0,0,.045),120ms 淡入淡出,移出还原;
+⑦ <b>滚动条全隐藏</b>:列表/详情/表单 ScrollView(showsIndicators:false),滚轮与触摸板照常滚动;
+⑧ <b>长列表懒加载</b>:LazyVStack 只渲染可见行,几十/几百条同套滚动,无分页无卡顿;
+⑨ <b>Emoji 选择器</b>:分类用下拉菜单(9 类分段控件固有宽超面板会撑破布局),
+   常用区横向滚动,网格固定 6 列。
+</div>
+
+<div class="spec" style="background:#fffbe8">
+<b>交互规范(全局)</b>:
+hover 120ms ease-out · 按压 scale .96 · 开关 180ms · 行出现 150ms fade+slide ·
+拖拽排序 spring(0.28/0.8)实时让位 · 面板弹出 spring(scale .92→1) ·
+内联确认条 150ms 高度+透明度。
+</div>
+
+<div class="spec">
+① 每页只有一个返回(自定义 ←,系统返回键已隐藏);
+② 表单/设置行统一「标签左 · 控件右」,开关为右侧 switch,两个下拉框统一宽 118px 右对齐;
+③ 分割线:表单/详情左缩进 14px,列表左缩进 46px(避开 Emoji);
+④ 面板背景保持系统半透明材质;
 ⑤ 删除确认一律内联条(红底),不用系统弹层。
 </div>
 
@@ -187,8 +207,14 @@
         <span class="mid"><div class="nm">项目上线</div><div class="meta">2026年10月22日 · 就是今天</div></span>
         <span class="num"><b style="color:#808090">0</b><i>天</i></span>
       </div>
+      <div class="row"><span class="emo">🎧</span><span class="mid"><div class="nm">播客更新</div><div class="meta">每周 · 2026年10月23日 · 还有</div></span><span class="num"><b style="color:#12a5a0">1</b><i>天</i></span></div>
+      <div class="row"><span class="emo">🐙</span><span class="mid"><div class="nm">体检报告</div><div class="meta">2026年10月26日 · 还有</div></span><span class="num"><b style="color:#a020c0">4</b><i>天</i></span></div>
+      <div class="row"><span class="emo">🏦</span><span class="mid"><div class="nm">还房贷</div><div class="meta">每月 · 2026年10月28日 · 还有</div></span><span class="num"><b style="color:#e08535">6</b><i>天</i></span></div>
+      <div class="row"><span class="emo">🎀</span><span class="mid"><div class="nm">闺蜜生日</div><div class="meta">每年 · 2026年11月2日 · 还有</div></span><span class="num"><b style="color:#e055a0">11</b><i>天</i></span></div>
+      <div class="row"><span class="emo">📚</span><span class="mid"><div class="nm">读书会</div><div class="meta">2026年11月8日 · 还有</div></span><span class="num"><b style="color:#34a853">17</b><i>天</i></span></div>
+      <div class="row"><span class="emo">🚗</span><span class="mid"><div class="nm">车辆年检</div><div class="meta">每年 · 2026年11月15日 · 还有</div></span><span class="num"><b style="color:#2233cc">24</b><i>天</i></span></div>
     </div>
-    <div class="cap">① 列表行:Emoji 左 · 粗体名+元信息 中 · 大数字+单位右(数字=所选颜色)</div>
+    <div class="cap">① 列表行:Emoji 左 · 粗体名+元信息 中 · 大数字+单位右(数字=所选颜色)——几十条同套滚动(LazyVStack 懒加载),滚动条隐藏</div>
   </div>
 
   <div>
@@ -343,14 +369,15 @@
       </div>
       <div class="em-picker">
         <div class="frq"><span>📌</span><span>⭐️</span><span>🎂</span><span>🎉</span><span>❤️</span><span>✈️</span><span>🏠</span><span>💼</span><span>🎁</span><span>💐</span><span>📅</span><span>⏰</span></div>
-        <div class="em-tabs"><span class="on">表情</span><span>手势</span><span>爱心</span><span>动物</span><span>食物</span><span>活动</span></div>
+        <div style="display:flex;justify-content:flex-end"><span class="sel" style="min-width:96px">表情</span></div>
         <div class="em-grid">
           <span class="on">😀</span><span>😄</span><span>🥰</span><span>😍</span><span>🤩</span><span>😎</span>
           <span>🥳</span><span>😴</span><span>🤯</span><span>🫠</span><span>😇</span><span>🤗</span>
         </div>
       </div>
     </div>
-    <div class="cap">⑧ 点大 Emoji / ☺ 展开选择器(常用 + 分类页签 + 网格),点 ✓ 收起</div>
+    <div class="cap">⑧ 点大 Emoji / ☺ 展开选择器(常用区横滑 + 分类下拉 + 网格)。
+       分类用下拉而非分段:9 个分段固有宽 &gt; 面板宽,会把表单撑破(实测踩坑,已改)</div>
   </div>
 </div>
 
