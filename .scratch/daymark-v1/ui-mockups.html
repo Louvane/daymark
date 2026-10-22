@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="UTF-8">
+<title>Daymark · 界面布局规范(Moment 式)</title>
+<style>
+  :root{
+    --bg:#f5f5f7; --panel:#ffffff; --ink:#1d1d1f; --ink2:#86868b;
+    --line:#e5e5ea; --accent:#4f46e5; --red:#e03535; --chip:#f2f2f4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);font-family:-apple-system,"PingFang SC",sans-serif;color:var(--ink);padding:32px}
+  h1{font-size:22px;margin-bottom:4px}
+  .sub{color:var(--ink2);font-size:13px;margin-bottom:28px}
+  h2{font-size:15px;margin:36px 0 12px;color:#333}
+  .grid{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}
+  .spec{background:#fffbe8;border:1px solid #f0e0a0;border-radius:8px;padding:10px 14px;font-size:12px;color:#6b5b1f;max-width:640px;line-height:1.7;margin-bottom:8px}
+  /* ── 面板骨架 ── */
+  .phone{width:320px;background:var(--panel);border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.14);overflow:hidden;flex-shrink:0}
+  .cap{font-size:12px;color:var(--ink2);margin-top:8px;text-align:center}
+  .hdr{display:flex;align-items:center;height:44px;padding:0 14px;position:relative;border-bottom:1px solid var(--line)}
+  .hdr .title{position:absolute;left:0;right:0;text-align:center;font-size:13px;font-weight:600;pointer-events:none}
+  .hdr .left,.hdr .right{display:flex;align-items:center;gap:10px;z-index:1}
+  .hdr .right{margin-left:auto}
+  .wordmark{font-size:11px;font-weight:800;letter-spacing:2px;color:var(--ink2)}
+  .ic{width:18px;height:18px;display:inline-block;vertical-align:-3px}
+  .ic svg{width:18px;height:18px;stroke:#555;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .ic.b svg{stroke:var(--accent)} .ic.r svg{stroke:var(--red)}
+  /* ── 列表 ── */
+  .row{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--line)}
+  .row .emo{font-size:17px;width:30px;text-align:center;flex-shrink:0}
+  .row .mid{flex:1;min-width:0}
+  .row .nm{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row .meta{font-size:10.5px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row .num{text-align:right;flex-shrink:0}
+  .row .num b{font-size:17px;font-weight:700}
+  .row .num i{display:block;font-style:normal;font-size:10.5px;color:var(--ink2);text-align:right}
+  .row.confirm{background:#fdecec}
+  .row.confirm .q{flex:1;font-size:12.5px;font-weight:600;color:var(--red)}
+  .btn{border:none;border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer}
+  .btn.ghost{background:var(--chip);color:var(--ink)}
+  .btn.danger{background:var(--red);color:#fff}
+  .empty{padding:60px 20px;text-align:center}
+  .empty b{display:block;font-size:14px;margin-bottom:6px}
+  .empty span{font-size:12px;color:var(--ink2)}
+  /* 右键菜单示意 */
+  .ctx{position:absolute;width:150px;background:#fff;border-radius:8px;box-shadow:0 6px 24px rgba(0,0,0,.2);padding:5px;font-size:13px;z-index:5}
+  .ctx div{padding:5px 10px;border-radius:5px}
+  .ctx div:hover{background:#f0f0f2}
+  .ctx::before{content:"";position:absolute;left:-5px;top:13px;width:10px;height:10px;background:#fff;transform:rotate(45deg);box-shadow:-1px -1px 2px rgba(0,0,0,.08)}
+  .row.hl{background:#eef0ff}
+  .ctx .red{color:var(--red)}
+  .ctx hr{border:none;border-top:1px solid var(--line);margin:4px 6px}
+  /* ── 表单/详情通用行 ── */
+  .frow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);font-size:13px}
+  .frow:last-child{border-bottom:none}
+  .frow .lab{color:var(--ink)}
+  .frow .val{color:var(--ink);display:flex;align-items:center;gap:8px}
+  .frow .val.gray{color:var(--ink2)}
+  .sel{display:inline-flex;align-items:center;justify-content:space-between;gap:10px;background:var(--chip);border-radius:6px;padding:4px 10px;min-width:118px;font-size:12.5px}
+  .sel::after{content:"⌄";color:var(--ink2);font-size:11px}
+  .switch{width:34px;height:20px;border-radius:10px;background:#d1d1d6;position:relative;flex-shrink:0}
+  .switch::after{content:"";position:absolute;left:2px;top:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+  .switch.on{background:#34c759}
+  .switch.on::after{left:auto;right:2px}
+  /* 表单 */
+  .emoji-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--line)}
+  .emoji-big{font-size:34px;line-height:1}
+  .facebtn{width:26px;height:26px;border-radius:50%;background:var(--chip);display:flex;align-items:center;justify-content:center;font-size:13px}
+  .dots{display:flex;gap:6px}
+  .dot{width:13px;height:13px;border-radius:50%}
+  .dot.sel2{outline:2px solid var(--ink);outline-offset:1.5px}
+  .name-sec{padding:10px 14px;border-bottom:1px solid var(--line)}
+  .name-sec .lab{font-size:10.5px;color:var(--ink2);margin-bottom:2px}
+  .name-sec input{border:none;outline:none;font-size:16px;font-weight:700;width:100%;color:var(--ink);background:transparent}
+  /* 详情 */
+  .hero{padding:18px 14px 14px;text-align:center}
+  .diamond{width:74px;height:74px;margin:6px auto 10px;border:1px solid #d5d5da;border-radius:14px;transform:rotate(45deg);display:flex;align-items:center;justify-content:center}
+  .diamond span{transform:rotate(-45deg);font-size:36px}
+  .hero .nm{font-size:16px;font-weight:700}
+  .hero .mt{font-size:11px;color:var(--ink2);margin-top:3px}
+  .numblock{margin:4px 14px 14px;background:var(--chip);border-radius:12px;text-align:center;padding:16px 0}
+  .numblock b{font-size:40px;font-weight:800;letter-spacing:-1px}
+  .numblock i{font-style:normal;font-size:14px;color:var(--ink2);margin-left:6px}
+  .card{margin:0 14px 14px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .card .frow{padding:9px 14px;font-size:12.5px}
+  .card .frow .lab{color:var(--ink2)}
+  .confirmbar{display:flex;align-items:center;gap:8px;margin:10px 14px;background:#fdecec;border-radius:10px;padding:8px 10px;font-size:12.5px}
+  .confirmbar .q{flex:1;color:var(--red);font-weight:600}
+  /* 设置窗口 */
+  .win{width:420px;background:#fff;border-radius:10px;box-shadow:0 10px 34px rgba(0,0,0,.18);overflow:hidden;flex-shrink:0}
+  .winbar{height:38px;display:flex;align-items:center;padding:0 12px;border-bottom:1px solid var(--line);position:relative}
+  .dot-t{width:11px;height:11px;border-radius:50%;margin-right:7px}
+  .winbar .tabs{position:absolute;right:10px;display:flex;gap:4px}
+  .winbar .tab{font-size:11px;color:var(--ink2);padding:4px 10px;border-radius:6px}
+  .winbar .tab.on{background:var(--chip);color:var(--accent);font-weight:600}
+  .setrow{display:flex;align-items:center;justify-content:space-between;padding:11px 18px;border-bottom:1px solid var(--line);font-size:13px}
+  .setrow:last-child{border-bottom:none}
+  .setrow .hint{font-size:11px;color:var(--ink2);margin-top:2px}
+  .about{text-align:center;padding:26px 0 30px}
+  .about .ic-big{font-size:38px}
+  .about .nm{font-size:15px;font-weight:700;margin:6px 0 2px}
+  .about .v{font-size:12px;color:var(--ink2)}
+  .about a{font-size:12.5px;color:var(--accent);text-decoration:none;display:inline-block;margin-top:10px}
+  .about .lic{font-size:11px;color:var(--ink2);margin-top:10px;line-height:1.6}
+  .em-picker{margin:10px 14px;background:var(--chip);border-radius:10px;padding:10px}
+  .em-picker .frq{display:flex;gap:4px;overflow:hidden;margin-bottom:8px}
+  .em-picker .frq span{font-size:16px}
+  .em-tabs{display:flex;gap:2px;background:#e4e4e8;border-radius:6px;padding:2px;margin-bottom:8px}
+  .em-tabs span{flex:1;text-align:center;font-size:10px;padding:3px 0;border-radius:4px;color:var(--ink2)}
+  .em-tabs span.on{background:#fff;color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.12)}
+  .em-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:2px}
+  .em-grid span{font-size:16px;text-align:center;padding:3px 0;border-radius:5px}
+  .em-grid span.on{background:#dfe3ff}
+</style>
+</head>
+<body>
+
+<h1>Daymark · 界面布局规范</h1>
+<div class="sub">对照 Moment 设计 · 2026-10-22 · 用于评审,确认后照此修 SwiftUI</div>
+
+<div class="spec">
+<b>对齐规范(全局)</b>:
+① 每页只有一个返回(自定义 ←,系统返回键已隐藏);
+② 表单/设置行统一「标签左 · 控件右」,开关为右侧 switch,两个下拉框统一宽 118px 右对齐;
+③ 分割线:表单/详情左缩进 14px,列表左缩进 46px(避开 Emoji);
+④ 面板背景保持系统半透明材质;
+⑤ 删除确认一律内联条(红底),不用系统弹层。
+</div>
+
+<h2>① 面板 · 列表(最近优先)</h2>
+<div class="grid">
+  <div>
+    <div class="phone" style="position:relative">
+      <div class="hdr">
+        <span class="left"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.1-.4.1-.8.1-1.2z"/></svg></span></span>
+        <span class="title wordmark">DAYMARK</span>
+        <span class="right">
+          <span class="ic"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h16"/></svg></span>
+          <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+        </span>
+      </div>
+      <div class="ctx" style="left:128px;top:51px;box-shadow:0 6px 24px rgba(0,0,0,.2), 0 0 0 1px rgba(0,0,0,.04)">
+        <div>详情</div><div>编辑</div><hr><div class="red">删除</div>
+      </div>
+      <div class="row hl" style="border-top:none">
+        <span class="emo">🎂</span>
+        <span class="mid"><div class="nm">生日</div><div class="meta">每年 · 2026年12月24日 · 还有</div></span>
+        <span class="num"><b style="color:#4f46e5">63</b><i>天</i></span>
+      </div>
+      <div class="row">
+        <span class="emo">✈️</span>
+        <span class="mid"><div class="nm">日本旅行</div><div class="meta">2026年11月1日 – 11月5日 · 未开始</div></span>
+        <span class="num"><b style="color:#e08535">10</b><i>天</i></span>
+      </div>
+      <div class="row">
+        <span class="emo">🏃</span>
+        <span class="mid"><div class="nm">坚持健身 100 天</div><div class="meta">2026年10月21日 – 2027年1月28日 · 进行中</div></span>
+        <span class="num"><b style="color:#34a853">2</b><i>共100天</i></span>
+      </div>
+      <div class="row">
+        <span class="emo">🎉</span>
+        <span class="mid"><div class="nm">成立纪念日</div><div class="meta">每年 · 2020年10月22日 · 已过去</div></span>
+        <span class="num"><b style="color:#c026d3">2196</b><i>天</i></span>
+      </div>
+      <div class="row">
+        <span class="emo">🎯</span>
+        <span class="mid"><div class="nm">项目上线</div><div class="meta">2026年10月22日 · 就是今天</div></span>
+        <span class="num"><b style="color:#808090">0</b><i>天</i></span>
+      </div>
+    </div>
+    <div class="cap">① 列表行:Emoji 左 · 粗体名+元信息 中 · 大数字+单位右(数字=所选颜色)</div>
+  </div>
+
+  <div>
+    <div class="phone" style="position:relative">
+      <div class="hdr">
+        <span class="left"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.1-.4.1-.8.1-1.2z"/></svg></span></span>
+        <span class="title wordmark">DAYMARK</span>
+        <span class="right"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></span>
+      </div>
+      <div class="row confirm">
+        <span class="emo">🎂</span>
+        <span class="q">删除「生日」?</span>
+        <button class="btn ghost">取消</button>
+        <button class="btn danger">删除</button>
+      </div>
+      <div class="row" style="border-top:none">
+        <span class="emo">✈️</span>
+        <span class="mid"><div class="nm">日本旅行</div><div class="meta">未开始 · 10 天</div></span>
+        <span class="num"><b style="color:#e08535">10</b><i>天</i></span>
+      </div>
+    </div>
+    <div class="cap">② 右键删除 → 行内确认条(非系统弹层,面板不关)</div>
+  </div>
+
+  <div>
+    <div class="phone" style="position:relative">
+      <div class="hdr">
+        <span class="left"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.1-.4.1-.8.1-1.2z"/></svg></span></span>
+        <span class="title wordmark">DAYMARK</span>
+        <span class="right"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></span>
+      </div>
+      <div class="empty"><b>还没有日标</b><span>点击右上角 + 创建第一条</span></div>
+    </div>
+    <div class="cap">③ 空态(无行则无右键;右键菜单见 ① 第一行示意,实际位置由系统在鼠标处定位)</div>
+  </div>
+</div>
+
+  </div>
+</div>
+
+<h2>② 详情页(hero 式)</h2>
+<div class="grid">
+  <div>
+    <div class="phone">
+      <div class="hdr">
+        <span class="left"><span class="ic"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></span></span>
+        <span class="title">详情</span>
+        <span class="right">
+          <span style="font-size:12.5px;color:#555">编辑</span>
+          <span class="ic r"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13"/></svg></span>
+        </span>
+      </div>
+      <div class="hero">
+        <div class="diamond"><span>📌</span></div>
+        <div class="nm">生日</div>
+        <div class="mt">2026年12月24日</div>
+      </div>
+      <div class="numblock"><b>63</b><i>天</i></div>
+      <div class="card">
+        <div class="frow"><span class="lab">名称</span><span class="val">生日</span></div>
+        <div class="frow"><span class="lab">日期</span><span class="val">2026年12月24日</span></div>
+        <div class="frow"><span class="lab">重复</span><span class="val">每年</span></div>
+        <div class="frow"><span class="lab">提醒</span><span class="val">提前 1 天</span></div>
+      </div>
+    </div>
+    <div class="cap">④ 详情:← | 详情居中 | 编辑+🗑 · 菱形 Emoji → 名称 → 大数字块 → 字段卡</div>
+  </div>
+  <div>
+    <div class="phone">
+      <div class="hdr">
+        <span class="left"><span class="ic"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></span></span>
+        <span class="title">详情</span>
+        <span class="right">
+          <span style="font-size:12.5px;color:#555">编辑</span>
+          <span class="ic r"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13"/></svg></span>
+        </span>
+      </div>
+      <div class="confirmbar"><span class="q">删除这条日标?</span><button class="btn ghost">取消</button><button class="btn danger">删除</button></div>
+      <div class="hero">
+        <div class="diamond"><span>✈️</span></div>
+        <div class="nm">日本旅行</div>
+        <div class="mt">2026年11月1日 – 11月5日</div>
+      </div>
+      <div class="numblock"><b>10</b><i>天</i></div>
+      <div class="card">
+        <div class="frow"><span class="lab">日期</span><span class="val">2026年11月1日</span></div>
+        <div class="frow"><span class="lab">区间</span><span class="val">11月1日 – 11月5日</span></div>
+      </div>
+    </div>
+    <div class="cap">⑤ 详情 · 内联删除确认条(顶部红底,替代系统弹层)</div>
+  </div>
+</div>
+
+<h2>③ 表单 · 新建 / 编辑(平铺行,对齐修正后)</h2>
+<div class="spec">
+<b>修正点</b>:两个下拉统一宽 118px;「具体时刻/日期区间」开关改为标签左 + switch 右(与全部行同构);
+色板独立成「颜色」行(不再和 Emoji 挤一行);头部只有一个 ←;保存为右上 ✓。
+</div>
+<div class="grid">
+  <div>
+    <div class="phone">
+      <div class="hdr">
+        <span class="left"><span class="ic"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></span></span>
+        <span class="title">新建日标</span>
+        <span class="right"><span class="ic b"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span></span>
+      </div>
+      <div class="emoji-row">
+        <span class="emoji-big">📌</span>
+        <span class="facebtn">☺</span>
+      </div>
+      <div class="frow"><span class="lab">颜色</span><span class="val dots">
+        <span class="dot sel2" style="background:#4f46e5"></span><span class="dot" style="background:#e03535"></span><span class="dot" style="background:#f08a24"></span><span class="dot" style="background:#f5c518"></span><span class="dot" style="background:#34a853"></span><span class="dot" style="background:#12a5a0"></span><span class="dot" style="background:#a020c0"></span><span class="dot" style="background:#e055a0"></span><span class="dot" style="background:#2233cc"></span><span class="dot" style="background:#8a8a90"></span>
+      </span></div>
+      <div class="name-sec"><div class="lab">名称</div><input value="" placeholder="给这个日子起个名字"></div>
+      <div class="frow"><span class="lab">日期</span><span class="val sel">2026/10/22</span></div>
+      <div class="frow"><span class="lab">具体时刻</span><span class="switch"></span></div>
+      <div class="frow"><span class="lab">日期区间</span><span class="switch"></span></div>
+      <div class="frow"><span class="lab">重复</span><span class="val sel">不重复</span></div>
+      <div class="frow"><span class="lab">提醒</span><span class="val sel">不提醒</span></div>
+    </div>
+    <div class="cap">⑥ 新建:← | 标题 | ✓ · 行行同构,控件右对齐,下拉统一宽</div>
+  </div>
+
+  <div>
+    <div class="phone">
+      <div class="hdr">
+        <span class="left"><span class="ic"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></span></span>
+        <span class="title">编辑日标</span>
+        <span class="right"><span class="ic b"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span></span>
+      </div>
+      <div class="emoji-row"><span class="emoji-big">✈️</span><span class="facebtn">☺</span></div>
+      <div class="frow"><span class="lab">颜色</span><span class="val dots">
+        <span class="dot" style="background:#4f46e5"></span><span class="dot" style="background:#e03535"></span><span class="dot sel2" style="background:#f08a24"></span><span class="dot" style="background:#f5c518"></span><span class="dot" style="background:#34a853"></span><span class="dot" style="background:#12a5a0"></span><span class="dot" style="background:#a020c0"></span><span class="dot" style="background:#e055a0"></span><span class="dot" style="background:#2233cc"></span><span class="dot" style="background:#8a8a90"></span>
+      </span></div>
+      <div class="name-sec"><div class="lab">名称</div><input value="日本旅行"></div>
+      <div class="frow"><span class="lab">日期</span><span class="val sel">2026/11/1</span></div>
+      <div class="frow"><span class="lab">具体时刻</span><span class="switch on"></span></div>
+      <div class="frow"><span class="lab">结束日期</span><span class="val sel">2026/11/5</span></div>
+      <div class="frow"><span class="lab">日期区间</span><span class="switch on"></span></div>
+      <div class="frow"><span class="lab">重复</span><span class="val sel">不重复</span></div>
+      <div class="frow"><span class="lab">提醒</span><span class="val sel">提前 1 天</span></div>
+    </div>
+    <div class="cap">⑦ 编辑:区间开启 → 「结束日期」行出现在区间开关上方;具体时刻开启 → 日期选择器含时间</div>
+  </div>
+
+  <div>
+    <div class="phone">
+      <div class="hdr">
+        <span class="left"><span class="ic"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></span></span>
+        <span class="title">新建日标</span>
+        <span class="right"><span class="ic b"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span></span>
+      </div>
+      <div class="em-picker">
+        <div class="frq"><span>📌</span><span>⭐️</span><span>🎂</span><span>🎉</span><span>❤️</span><span>✈️</span><span>🏠</span><span>💼</span><span>🎁</span><span>💐</span><span>📅</span><span>⏰</span></div>
+        <div class="em-tabs"><span class="on">表情</span><span>手势</span><span>爱心</span><span>动物</span><span>食物</span><span>活动</span></div>
+        <div class="em-grid">
+          <span class="on">😀</span><span>😄</span><span>🥰</span><span>😍</span><span>🤩</span><span>😎</span>
+          <span>🥳</span><span>😴</span><span>🤯</span><span>🫠</span><span>😇</span><span>🤗</span>
+        </div>
+      </div>
+    </div>
+    <div class="cap">⑧ 点大 Emoji / ☺ 展开选择器(常用 + 分类页签 + 网格),点 ✓ 收起</div>
+  </div>
+</div>
+
+<h2>④ 设置窗口(通用 / 关于)</h2>
+<div class="grid">
+  <div>
+    <div class="win">
+      <div class="winbar">
+        <span class="dot-t" style="background:#ff5f57"></span><span class="dot-t" style="background:#febc2e"></span><span class="dot-t" style="background:#28c840"></span>
+        <b style="font-size:13px;margin-left:6px">设置</b>
+        <span class="tabs"><span class="tab on">通用</span><span class="tab">关于</span></span>
+      </div>
+      <div class="setrow">
+        <span>默认提醒时刻<div class="hint">无具体时刻的日标在该时刻提醒</div></span>
+        <span class="val sel">09:00</span>
+      </div>
+      <div class="setrow">
+        <span>开机自启动<div class="hint">与系统登录项状态保持同步</div></span>
+        <span class="switch"></span>
+      </div>
+      <div class="setrow"><span>列表排序</span><span class="val sel">最近优先</span></div>
+    </div>
+    <div class="cap">⑨ 通用:同样「标签左 · 控件右」;带说明小字</div>
+  </div>
+  <div>
+    <div class="win">
+      <div class="winbar">
+        <span class="dot-t" style="background:#ff5f57"></span><span class="dot-t" style="background:#febc2e"></span><span class="dot-t" style="background:#28c840"></span>
+        <b style="font-size:13px;margin-left:6px">设置</b>
+        <span class="tabs"><span class="tab">通用</span><span class="tab on">关于</span></span>
+      </div>
+      <div class="about">
+        <div class="ic-big">📅</div>
+        <div class="nm">Daymark</div>
+        <div class="v">版本 1.0.0 (1)</div>
+        <a href="#">GitHub 开源地址</a>
+        <div class="lic">以 MIT 许可证开源<br>受 Moment 启发,非官方复刻。</div>
+      </div>
+    </div>
+    <div class="cap">⑩ 关于:版本 / GitHub / MIT / 致谢</div>
+  </div>
+</div>
+
+</body>
+</html>

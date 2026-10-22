@@ -531,6 +531,23 @@
         }
       }
     },
+    "form.field.color": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Color"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "颜色"
+          }
+        }
+      }
+    },
     "form.field.date": {
       "extractionState": "manual",
       "localizations": {
@@ -1314,6 +1331,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "默认提醒时刻"
+          }
+        }
+      }
+    },
+    "settings.sort": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sort order"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "列表排序"
           }
         }
       }

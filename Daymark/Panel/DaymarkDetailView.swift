@@ -44,7 +44,8 @@ struct DaymarkDetailView: View {
         self.onDelete = onDelete
     }
 
-    @State private var showsDeleteConfirm = false
+    /// 两段式删除:点垃圾桶进入内联确认,再点删除才真删(面板内禁用系统弹层)
+    @State private var confirmingDelete = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -52,6 +53,9 @@ struct DaymarkDetailView: View {
             Divider()
             ScrollView {
                 VStack(spacing: 16) {
+                    if confirmingDelete {
+                        confirmBar
+                    }
                     hero
                     numberBlock
                     fieldsCard
@@ -59,18 +63,30 @@ struct DaymarkDetailView: View {
                 .padding(16)
             }
         }
-        .confirmationDialog(
-            Text("detail.delete.confirm.title"),
-            isPresented: $showsDeleteConfirm,
-            titleVisibility: .visible
-        ) {
-            Button("detail.action.delete", role: .destructive) {
+        .navigationBarBackButtonHidden(true)
+    }
+
+    /// 内联确认条(替代系统 confirmationDialog)
+    private var confirmBar: some View {
+        HStack(spacing: 10) {
+            Text("detail.delete.confirm.title")
+                .font(.callout.bold())
+                .foregroundStyle(.red)
+            Spacer()
+            Button("common.cancel") {
+                confirmingDelete = false
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.small)
+            Button("detail.action.delete") {
                 onDelete()
             }
-            Button("common.cancel", role: .cancel) {}
-        } message: {
-            Text("detail.delete.confirm.subtitle")
+            .buttonStyle(.borderedProminent)
+            .controlSize(.small)
+            .tint(.red)
         }
+        .padding(10)
+        .background(.red.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
     }
 
     /// 头部:← 返回 | 标题居中 | 编辑(文字)+ 删除(红)
@@ -92,7 +108,7 @@ struct DaymarkDetailView: View {
                     }
                     .buttonStyle(.plain)
                     Button {
-                        showsDeleteConfirm = true
+                        confirmingDelete = true
                     } label: {
                         Image(systemName: "trash")
                             .foregroundStyle(.red)

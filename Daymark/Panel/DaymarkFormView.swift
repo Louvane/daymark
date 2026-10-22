@@ -63,6 +63,8 @@ struct DaymarkFormView: View {
                 VStack(spacing: 0) {
                     emojiRow
                     Divider().padding(.leading, 14)
+                    colorRow
+                    Divider().padding(.leading, 14)
                     nameSection
                     Divider().padding(.leading, 14)
                     formRows
@@ -79,6 +81,7 @@ struct DaymarkFormView: View {
                 }
             }
         }
+        .navigationBarBackButtonHidden(true)
     }
 
     /// 头部:← | 标题居中 | ✓ 保存
@@ -107,7 +110,7 @@ struct DaymarkFormView: View {
         .padding(.vertical, 10)
     }
 
-    /// Emoji 行:大 Emoji 居左(点按切换选择器),色板居右
+    /// Emoji 行:大 Emoji 居左(点按切换选择器),☺ 按钮居右
     private var emojiRow: some View {
         HStack {
             Button {
@@ -118,7 +121,23 @@ struct DaymarkFormView: View {
             }
             .buttonStyle(.plain)
             Spacer()
-            // 预设色板(票 06 颜色标识)
+            Button {
+                showsEmojiPicker = true
+            } label: {
+                Text("☺")
+                    .font(.system(size: 15))
+                    .frame(width: 26, height: 26)
+                    .background(.quaternary.opacity(0.6), in: Circle())
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 10)
+    }
+
+    /// 颜色行:预设色板右对齐,选中圆点外圈描边
+    private var colorRow: some View {
+        formRow(labelKey: "form.field.color") {
             HStack(spacing: 6) {
                 ForEach(0..<DaymarkColorPalette.count, id: \.self) { index in
                     Circle()
@@ -133,8 +152,6 @@ struct DaymarkFormView: View {
                 }
             }
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 10)
     }
 
     /// 名称:小标签 + 大字无边框输入
@@ -160,9 +177,11 @@ struct DaymarkFormView: View {
                     .labelsHidden()
             }
             Divider().padding(.leading, 14)
-            Toggle("form.field.hasTime", isOn: $hasTime)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 10)
+            formRow(labelKey: "form.field.hasTime") {
+                Toggle("", isOn: $hasTime)
+                    .labelsHidden()
+                    .toggleStyle(.switch)
+            }
             Divider().padding(.leading, 14)
             if isRange {
                 formRow(labelKey: "form.field.end") {
@@ -172,9 +191,11 @@ struct DaymarkFormView: View {
                 }
                 Divider().padding(.leading, 14)
             }
-            Toggle("form.field.range", isOn: $isRange)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 10)
+            formRow(labelKey: "form.field.range") {
+                Toggle("", isOn: $isRange)
+                    .labelsHidden()
+                    .toggleStyle(.switch)
+            }
             Divider().padding(.leading, 14)
             formRow(labelKey: "form.field.repeat") {
                 Picker("", selection: $repeatCycle) {
@@ -183,7 +204,7 @@ struct DaymarkFormView: View {
                     }
                 }
                 .labelsHidden()
-                .frame(width: 90)
+                .frame(width: 118)
             }
             Divider().padding(.leading, 14)
             formRow(labelKey: "form.field.remind") {
@@ -194,7 +215,7 @@ struct DaymarkFormView: View {
                     }
                 }
                 .labelsHidden()
-                .frame(width: 110)
+                .frame(width: 118)
             }
         }
     }

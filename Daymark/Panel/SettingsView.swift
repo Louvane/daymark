@@ -31,9 +31,25 @@ struct GeneralSettingsView: View {
                 displayedComponents: .hourAndMinute
             )
             Toggle("settings.launchAtLogin", isOn: launchAtLoginBinding)
+                .toggleStyle(.switch)
+            HStack {
+                Text("settings.sort")
+                Spacer()
+                Picker("", selection: sortModeBinding) {
+                    Text("list.sort.upcoming").tag(DaymarkSortMode.upcoming)
+                    Text("list.sort.manual").tag(DaymarkSortMode.manual)
+                }
+                .labelsHidden()
+                .frame(width: 118)
+            }
         }
         .formStyle(.grouped)
         .padding(6)
+    }
+
+    /// 列表排序绑定(与面板内切换等效,统一存 AppSettings)
+    private var sortModeBinding: Binding<DaymarkSortMode> {
+        Binding(get: { settings.sortMode }, set: { settings.sortMode = $0 })
     }
 
     /// 时刻 <-> Date 双向绑定;改动即全量重排(假调度器测试覆盖链路)
@@ -86,10 +102,9 @@ struct AboutSettingsView: View {
     }
 
     var body: some View {
-        VStack(spacing: 10) {
-            Image(systemName: "calendar.badge.clock")
-                .font(.largeTitle)
-                .foregroundStyle(.tint)
+        VStack(spacing: 8) {
+            Text("📅")
+                .font(.system(size: 40))
             Text("panel.title")
                 .font(.title3.bold())
             Text("settings.about.version \(versionText)")
@@ -105,5 +120,6 @@ struct AboutSettingsView: View {
                 .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.bottom, 16)
     }
 }

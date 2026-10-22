@@ -135,26 +135,18 @@ struct DaymarkListView: View {
     private func row(_ item: Daymark) -> some View {
         DaymarkListRow(
             snapshot: .init(from: item),
+            confirmingDelete: pendingDelete?.id == item.id,
             onOpen: { onOpen(item.id) },
             onEdit: { onEdit(item.id) },
-            onDeleteRequest: { pendingDelete = item }
-        )
-        .confirmationDialog(
-            Text("detail.delete.confirm.title"),
-            isPresented: Binding(
-                get: { pendingDelete?.id == item.id },
-                set: { if !$0 { pendingDelete = nil } }
-            ),
-            titleVisibility: .visible,
-            presenting: pendingDelete
-        ) { target in
-            Button("detail.action.delete", role: .destructive) {
-                onDeleteRequest(target)
+            onDeleteRequest: { pendingDelete = item },
+            onCancelDelete: { pendingDelete = nil },
+            onConfirmDelete: {
+                if let victim = pendingDelete {
+                    store.delete(victim)
+                }
+                pendingDelete = nil
             }
-            Button("common.cancel", role: .cancel) {}
-        } message: { _ in
-            Text("detail.delete.confirm.subtitle")
-        }
+        )
     }
 
     /// 拖拽排序:按新顺序重写 sortWeight 并持久化
@@ -187,16 +179,25 @@ struct DaymarkListRow: View {
     }
 
     let snapshot: Snapshot
+    /// 右键删除后的内联确认态(面板内禁用系统弹层:会让 MenuBarExtra 失焦自动关闭)
+    let confirmingDelete: Bool
     let onOpen: () -> Void
     let onEdit: () -> Void
     let onDeleteRequest: () -> Void
+    let onCancelDelete: () -> Void
+    let onConfirmDelete: () -> Void
 
-    init(snapshot: Snapshot, onOpen: @escaping () -> Void,
-         onEdit: @escaping () -> Void, onDeleteRequest: @escaping () -> Void) {
+    init(snapshot: Snapshot, confirmingDelete: Bool,
+         onOpen: @escaping () -> Void, onEdit: @escaping () -> Void,
+         onDeleteRequest: @escaping () -> Void, onCancelDelete: @escaping () -> Void,
+         onConfirmDelete: @escaping () -> Void) {
         self.snapshot = snapshot
+        self.confirmingDelete = confirmingDelete
         self.onOpen = onOpen
         self.onEdit = onEdit
         self.onDeleteRequest = onDeleteRequest
+        self.onCancelDelete = onCancelDelete
+        self.onConfirmDelete = onConfirmDelete
     }
 
     private var state: DaymarkDisplayState {
@@ -206,33 +207,56 @@ struct DaymarkListRow: View {
     }
 
     var body: some View {
-        Button(action: onOpen) {
-            HStack(spacing: 10) {
-                Text(snapshot.emoji)
-                    .font(.title3)
-                    .frame(width: 30)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(snapshot.name)
-                        .font(.body.bold())
-                        .lineLimit(1)
-                    metaText
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
+        if confirmingDelete {
+            confirmBar
+        } else {
+            Button(action: onOpen) {
+                HStack(spacing: 10) {
+                    Text(snapshot.emoji)
+                        .font(.title3)
+                        .frame(width: 30)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(snapshot.name)
+                            .font(.body.bold())
+                            .lineLimit(1)
+                        metaText
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                    }
+                    Spacer(minLength: 8)
+                    badge
                 }
-                Spacer(minLength: 8)
-                badge
+                .padding(.vertical, 8)
+                .contentShape(Rectangle())
             }
-            .padding(.vertical, 8)
-            .contentShape(Rectangle())
+            .buttonStyle(.plain)
+            .contextMenu {
+                Button(action: onOpen) { Text("detail.title") }
+                Button(action: onEdit) { Text("detail.action.edit") }
+                Divider()
+                Button(role: .destructive, action: onDeleteRequest) { Text("detail.action.delete") }
+            }
         }
-        .buttonStyle(.plain)
-        .contextMenu {
-            Button(action: onOpen) { Text("detail.title") }
-            Button(action: onEdit) { Text("detail.action.edit") }
-            Divider()
-            Button(role: .destructive, action: onDeleteRequest) { Text("detail.action.delete") }
+    }
+
+    /// 内联确认条:替代系统 confirmationDialog(后者会令面板失焦自动关闭)
+    private var confirmBar: some View {
+        HStack(spacing: 10) {
+            Text("detail.delete.confirm.title")
+                .font(.callout.bold())
+                .foregroundStyle(.red)
+                .lineLimit(1)
+            Spacer()
+            Button("common.cancel", action: onCancelDelete)
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+            Button("detail.action.delete", action: onConfirmDelete)
+                .buttonStyle(.borderedProminent)
+                .controlSize(.small)
+                .tint(.red)
         }
+        .padding(.vertical, 8)
     }
 
     /// 右侧大数字 + 单位,数字用所选颜色(票 06 的颜色标识)
