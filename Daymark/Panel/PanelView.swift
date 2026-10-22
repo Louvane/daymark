@@ -24,10 +24,16 @@ struct PanelView: View {
                     if let item = item(with: id) {
                         DaymarkDetailView(
                             item: item,
+                            onBack: pop,
                             onEdit: { path.append(.edit(id)) },
                             onDelete: {
-                                store.delete(item)
+                                // 先出栈,等动画结束再删:详情页重渲染期间模型必须仍有效
                                 path.removeAll()
+                                let victim = item
+                                Task { @MainActor in
+                                    try? await Task.sleep(nanoseconds: 400_000_000)
+                                    store.delete(victim)
+                                }
                             }
                         )
                     } else {
@@ -62,7 +68,11 @@ struct PanelView: View {
     private var listView: some View {
         DaymarkListView(
             onAdd: { path.append(.create(nil)) },
-            onOpen: { path.append(.detail($0)) }
+            onOpen: { path.append(.detail($0)) },
+            onEdit: { path.append(.edit($0)) },
+            onDeleteRequest: { victim in
+                store.delete(victim)
+            }
         )
     }
 

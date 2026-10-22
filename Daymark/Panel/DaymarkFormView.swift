@@ -1,6 +1,8 @@
 import SwiftUI
 
-/// 创建/编辑复用的同一表单组件(票 03 起编辑模式启用)
+/// 创建/编辑复用的同一表单(Moment 式平铺行):
+/// 头部 ← | 标题居中 | ✓ 保存;大 Emoji + 😊 选择按钮;名称小标签 + 大字输入;
+/// 平铺行(日期/区间/时刻/重复/提醒/外观),细分割线。
 struct DaymarkFormView: View {
     enum Mode: Equatable {
         case create
@@ -46,92 +48,166 @@ struct DaymarkFormView: View {
         }
     }
 
+    /// 可选提前提醒天数
+    static let remindDayOptions = [1, 2, 3, 7, 14, 30]
+
     private var cleanedName: String {
         name.trimmingCharacters(in: .whitespacesAndNewlines)
     }
-
-    /// 可选提前提醒天数
-    static let remindDayOptions = [1, 2, 3, 7, 14, 30]
 
     var body: some View {
         VStack(spacing: 0) {
             header
             Divider()
-            Form {
-                TextField("form.field.name", text: $name, prompt: Text("form.field.name.placeholder"))
-                DatePicker("form.field.date", selection: $date,
-                           displayedComponents: hasTime ? [.date, .hourAndMinute] : [.date])
-                Toggle("form.field.hasTime", isOn: $hasTime)
-                Toggle("form.field.range", isOn: $isRange)
-                if isRange {
-                    DatePicker("form.field.end", selection: $endDate,
-                               in: date...,
-                               displayedComponents: [.date])
+            ScrollView {
+                VStack(spacing: 0) {
+                    emojiRow
+                    Divider().padding(.leading, 14)
+                    nameSection
+                    Divider().padding(.leading, 14)
+                    formRows
                 }
-                Picker("form.field.repeat", selection: $repeatCycle) {
+                .padding(.vertical, 6)
+                if showsEmojiPicker {
+                    VStack(spacing: 8) {
+                        EmojiPickerView(selection: $emoji, onDone: { showsEmojiPicker = false })
+                    }
+                    .padding(12)
+                    .background(.quaternary.opacity(0.35), in: RoundedRectangle(cornerRadius: 10))
+                    .padding(.horizontal, 14)
+                    .padding(.bottom, 10)
+                }
+            }
+        }
+    }
+
+    /// 头部:← | 标题居中 | ✓ 保存
+    private var header: some View {
+        ZStack {
+            Text(LocalizedStringKey(mode == .create ? "form.title.create" : "form.title.edit"))
+                .font(.headline)
+            HStack {
+                Button(action: onBack) {
+                    Image(systemName: "chevron.left")
+                }
+                .buttonStyle(.plain)
+                .help(Text("common.back"))
+                Spacer()
+                Button(action: save) {
+                    Image(systemName: "checkmark")
+                        .font(.body.bold())
+                        .foregroundStyle(cleanedName.isEmpty ? Color.secondary : Color.accentColor)
+                }
+                .buttonStyle(.plain)
+                .disabled(cleanedName.isEmpty)
+                .help(Text("form.action.save"))
+            }
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 10)
+    }
+
+    /// Emoji 行:大 Emoji 居左(点按切换选择器),色板居右
+    private var emojiRow: some View {
+        HStack {
+            Button {
+                showsEmojiPicker.toggle()
+            } label: {
+                Text(emoji)
+                    .font(.system(size: 40))
+            }
+            .buttonStyle(.plain)
+            Spacer()
+            // 预设色板(票 06 颜色标识)
+            HStack(spacing: 6) {
+                ForEach(0..<DaymarkColorPalette.count, id: \.self) { index in
+                    Circle()
+                        .fill(DaymarkColorPalette.color(at: index))
+                        .frame(width: 14, height: 14)
+                        .overlay {
+                            if index == DaymarkColorPalette.normalizedIndex(colorIndex) {
+                                Circle().strokeBorder(.primary, lineWidth: 1.5).padding(-2)
+                            }
+                        }
+                        .onTapGesture { colorIndex = index }
+                }
+            }
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 10)
+    }
+
+    /// 名称:小标签 + 大字无边框输入
+    private var nameSection: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("form.field.name")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            TextField("form.field.name.placeholder", text: $name)
+                .textFieldStyle(.plain)
+                .font(.title3.bold())
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 10)
+    }
+
+    /// 平铺表单行
+    private var formRows: some View {
+        VStack(spacing: 0) {
+            formRow(labelKey: "form.field.date") {
+                DatePicker("", selection: $date,
+                           displayedComponents: hasTime ? [.date, .hourAndMinute] : [.date])
+                    .labelsHidden()
+            }
+            Divider().padding(.leading, 14)
+            Toggle("form.field.hasTime", isOn: $hasTime)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 10)
+            Divider().padding(.leading, 14)
+            if isRange {
+                formRow(labelKey: "form.field.end") {
+                    DatePicker("", selection: $endDate, in: date...,
+                               displayedComponents: [.date])
+                        .labelsHidden()
+                }
+                Divider().padding(.leading, 14)
+            }
+            Toggle("form.field.range", isOn: $isRange)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 10)
+            Divider().padding(.leading, 14)
+            formRow(labelKey: "form.field.repeat") {
+                Picker("", selection: $repeatCycle) {
                     ForEach(RepeatCycle.allCases) { cycle in
                         Text(LocalizedStringKey(cycle.labelKey)).tag(cycle)
                     }
                 }
-                .pickerStyle(.segmented)
                 .labelsHidden()
-
-                // 外观:Emoji + 颜色(票 06)
-                HStack {
-                    Text("form.field.appearance")
-                        .foregroundStyle(.secondary)
-                    Spacer()
-                    // 当前 Emoji 预览,点击展开选择器
-                    Button {
-                        showsEmojiPicker.toggle()
-                    } label: {
-                        Text(emoji)
-                            .font(.title3)
-                    }
-                    .buttonStyle(.plain)
-                    // 预设色板
-                    HStack(spacing: 5) {
-                        ForEach(0..<DaymarkColorPalette.count, id: \.self) { index in
-                            Circle()
-                                .fill(DaymarkColorPalette.color(at: index))
-                                .frame(width: 16, height: 16)
-                                .overlay {
-                                    if index == DaymarkColorPalette.normalizedIndex(colorIndex) {
-                                        Circle().strokeBorder(.primary, lineWidth: 1.5).padding(-2)
-                                    }
-                                }
-                                .onTapGesture { colorIndex = index }
-                        }
-                    }
-                }
-                if showsEmojiPicker {
-                    EmojiPickerView(selection: $emoji, onDone: { showsEmojiPicker = false })
-                }
-                Picker("form.field.remind", selection: $remindDays) {
+                .frame(width: 90)
+            }
+            Divider().padding(.leading, 14)
+            formRow(labelKey: "form.field.remind") {
+                Picker("", selection: $remindDays) {
                     Text("remind.none").tag(0)
                     ForEach(Self.remindDayOptions, id: \.self) { days in
                         Text("remind.daysBefore \(days)").tag(days)
                     }
                 }
+                .labelsHidden()
+                .frame(width: 110)
             }
-            .formStyle(.grouped)
         }
     }
 
-    private var header: some View {
+    /// 标签左、控件右的平铺行
+    private func formRow(labelKey: LocalizedStringKey,
+                         control: @escaping () -> some View) -> some View {
         HStack {
-            Button(action: onBack) {
-                Image(systemName: "chevron.left")
-            }
-            .buttonStyle(.plain)
-            .help(Text("common.back"))
-            Text(LocalizedStringKey(mode == .create ? "form.title.create" : "form.title.edit"))
-                .font(.headline)
+            Text(labelKey)
             Spacer()
-            Button("form.action.save") { save() }
-                .buttonStyle(.borderedProminent)
-                .disabled(cleanedName.isEmpty)
+            control()
         }
+        .font(.callout)
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
     }
