@@ -27,6 +27,7 @@
 		909B3EEFDF44C0F3E68C32CE /* ReminderPlanning.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE92414DF78C73CF81E743D3 /* ReminderPlanning.swift */; };
 		98BBF0C72002CFB051E16F8A /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E3B772AC23C37972AC46DC /* SettingsTests.swift */; };
 		9B788B0CFB90E693A86C062B /* DaymarkStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D846FAA0C53C4B5A462F896 /* DaymarkStoreTests.swift */; };
+		A02FE690667DEBB7FFEE75A2 /* StatusItemPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7F9015B69855BB39034FBD /* StatusItemPanelController.swift */; };
 		ABB8BBF4C73C9E860D450699 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8FB58A69590845B383A7AB /* SettingsView.swift */; };
 		D2721A77B0EB35E59504DB82 /* ReminderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E71726DA02400AD3CB2350 /* ReminderTests.swift */; };
 		D4717D5E9D1F36A13E6A2BAD /* ColorPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023E287F547D6A9F14C15F67 /* ColorPalette.swift */; };
@@ -82,6 +83,7 @@
 		C919B130B655EE757D6BC2E7 /* HoverIconButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoverIconButtonStyle.swift; sourceTree = "<group>"; };
 		C91BF98219574A5CC9B98719 /* UISnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISnapshotTests.swift; sourceTree = "<group>"; };
 		D853763C8B7BA1420652BADA /* AppearanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceTests.swift; sourceTree = "<group>"; };
+		DF7F9015B69855BB39034FBD /* StatusItemPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusItemPanelController.swift; sourceTree = "<group>"; };
 		E83493A89B1BCD0BA84EAE7C /* DaymarkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DaymarkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC3250FAAF138DC6A3AD594D /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		ED6C1B80C9BF7F3289A4F226 /* DaymarkURLParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaymarkURLParserTests.swift; sourceTree = "<group>"; };
@@ -155,6 +157,7 @@
 			isa = PBXGroup;
 			children = (
 				B495990DC550968B746B961E /* NotificationRouting.swift */,
+				DF7F9015B69855BB39034FBD /* StatusItemPanelController.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -319,6 +322,7 @@
 				F39A9A2B224D4513B4BD353F /* ReminderScheduling.swift in Sources */,
 				D7F73FEC81998CE78AC777A8 /* RepeatCycle.swift in Sources */,
 				ABB8BBF4C73C9E860D450699 /* SettingsView.swift in Sources */,
+				A02FE690667DEBB7FFEE75A2 /* StatusItemPanelController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

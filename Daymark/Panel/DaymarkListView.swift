@@ -6,7 +6,6 @@ import SwiftData
 struct DaymarkListView: View {
     @Environment(DaymarkStore.self) private var store
     @Environment(AppSettings.self) private var settings
-    @Environment(\.openSettings) private var openSettings
     @Query private var daymarks: [Daymark]
 
     let onAdd: () -> Void
@@ -47,11 +46,7 @@ struct DaymarkListView: View {
         ZStack {
             HStack {
                 Button {
-                    NSApp.activate(ignoringOtherApps: true)
-                    openSettings()
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        NSApp.activate(ignoringOtherApps: true)
-                    }
+                    SettingsOpener.open()
                 } label: {
                     Image(systemName: "gearshape")
                 }

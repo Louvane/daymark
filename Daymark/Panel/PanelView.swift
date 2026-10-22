@@ -49,14 +49,10 @@ struct PanelView: View {
                 }
             }
         }
-        .frame(width: 320, height: 440)
-        .overlay(alignment: .top) {
-            // 顶部箭头:指向菜单栏图标(内容层绘制;MenuBarExtra 系统窗不带箭头)
-            PanelCaretShape()
-                .fill(.ultraThinMaterial)
-                .overlay(PanelCaretShape().stroke(Color(nsColor: .separatorColor).opacity(0.4), lineWidth: 0.5))
-                .frame(width: 20, height: 10)
-        }
+        .padding(.top, 12) // 顶部留给指向图标的面板箭头
+        .frame(width: 320, height: 452)
+        .background(PanelShape().fill(.ultraThinMaterial))
+        .overlay(PanelShape().stroke(Color(nsColor: .separatorColor).opacity(0.5), lineWidth: 0.5))
         .onChange(of: router.pendingDetailID) { _, newID in
             // 通知点击 → 面板打开后直接落在对应详情
             guard let id = newID else { return }
@@ -89,5 +85,25 @@ struct PanelView: View {
 
     private func pop() {
         if path.isEmpty == false { path.removeLast() }
+    }
+}
+
+
+/// 面板底形:圆角矩形 + 顶部居中箭头(指向菜单栏图标)
+struct PanelShape: Shape {
+    func path(in rect: CGRect) -> Path {
+        let caretHeight: CGFloat = 12
+        let caretWidth: CGFloat = 20
+        var path = Path()
+        let bodyRect = CGRect(x: rect.minX, y: rect.minY + caretHeight,
+                              width: rect.width, height: rect.height - caretHeight)
+        path.addRoundedRect(in: bodyRect,
+                            cornerSize: CGSize(width: 12, height: 12),
+                            style: .continuous)
+        path.move(to: CGPoint(x: rect.midX - caretWidth / 2, y: rect.minY + caretHeight))
+        path.addLine(to: CGPoint(x: rect.midX, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.midX + caretWidth / 2, y: rect.minY + caretHeight))
+        path.closeSubpath()
+        return path
     }
 }
