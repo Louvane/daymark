@@ -79,6 +79,7 @@ struct DaymarkListView: View {
             sortOption(.manual, Text("list.sort.manual"))
         }
         .padding(6)
+        .frame(width: 160) // 紧凑内容宽,与原生菜单一致(通栏是错的)
         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 10))
         .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(nsColor: .separatorColor).opacity(0.4)))
         .shadow(color: .black.opacity(0.15), radius: 8, y: 3)
