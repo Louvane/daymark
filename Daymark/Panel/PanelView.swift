@@ -52,7 +52,7 @@ struct PanelView: View {
         .padding(.top, 12) // 顶部留给指向图标的面板箭头
         .frame(maxHeight: 560) // 上限:超出滚动(列表)
         .fixedSize(horizontal: false, vertical: true) // 高度随内容自适应
-        .frame(width: 320)
+        .frame(width: 360)
         .background(PanelShape().fill(.ultraThinMaterial))
         .overlay(PanelShape().stroke(Color(nsColor: .separatorColor).opacity(0.5), lineWidth: 0.5))
         .onChange(of: router.pendingDetailID) { _, newID in
