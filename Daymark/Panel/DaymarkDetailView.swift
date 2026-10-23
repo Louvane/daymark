@@ -142,7 +142,7 @@ struct DaymarkDetailView: View {
             Image(nsImage: image)
                 .resizable()
                 .scaledToFill()
-                .frame(width: 52, height: 52)
+                .frame(width: 60, height: 60)
                 .clipShape(Circle())
         } else {
             Text(snapshot.emoji)
