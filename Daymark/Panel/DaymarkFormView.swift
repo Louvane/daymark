@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 import os.log
 
 /// 创建/编辑复用的同一表单(Moment 式平铺行):
@@ -22,6 +23,7 @@ struct DaymarkFormView: View {
     @State private var iconImageData: Data?
     @State private var cropSourceImage: NSImage?
     @State private var colorIndex = 0
+    @State private var dropTargeted = false
     @State private var showsEmojiPicker = false
     @State private var isRange = false
     @State private var endDate = Date.now.addingTimeInterval(86_400)
@@ -141,6 +143,9 @@ struct DaymarkFormView: View {
             }
             .buttonStyle(HoverIconButtonStyle())
             .help(Text("form.emoji.pick"))
+            .onDrop(of: [.image, .fileURL], isTargeted: $dropTargeted) { providers in
+                handleDrop(providers)
+            }
             Spacer()
             // 状态指示:选择器展开时显示收起箭头
             if showsEmojiPicker {
@@ -148,42 +153,82 @@ struct DaymarkFormView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
-            // 导入图片 / 移除图片
+            // 导入(剪贴板)/ 移除图片
             Button {
                 if iconImageData != nil {
                     iconImageData = nil
-                } else {
-                    IconImage.pickFromPanel { data in
-                        Self.iconLog.info("表单收到图片数据 \(data.count) bytes,进入裁剪")
-                        withAnimation(.easeOut(duration: 0.15)) {
-                            cropSourceImage = NSImage(data: data)
-                            showsEmojiPicker = false
-                        }
+                } else if let data = IconImage.pngDataFromPasteboard() {
+                    Self.iconLog.info("表单收到图片数据 \(data.count) bytes,进入裁剪")
+                    withAnimation(.easeOut(duration: 0.15)) {
+                        cropSourceImage = NSImage(data: data)
+                        showsEmojiPicker = false
                     }
+                } else {
+                    Self.iconLog.info("剪贴板无可用图片(拖拽或复制后再试)")
                 }
             } label: {
                 Image(systemName: iconImageData != nil ? "photo.badge.xmark" : "photo")
                     .font(.system(size: 14))
             }
             .buttonStyle(HoverIconButtonStyle())
-            .help(Text(iconImageData != nil ? "form.icon.remove" : "form.icon.import"))
+            .help(Text(iconImageData != nil ? "form.icon.remove" : "form.icon.import.clipboard"))
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
     }
 
-    /// 大图标预览:有图显示圆角图,否则显示 Emoji
+    /// 大图标预览:有图显示圆图,否则 Emoji;拖拽目标态虚线高亮
     @ViewBuilder
     private var iconPreview: some View {
-        if let data = iconImageData, let image = NSImage(data: data) {
-            Image(nsImage: image)
-                .resizable()
-                .scaledToFill()
-                .clipShape(Circle())
-        } else {
-            Text(emoji)
-                .font(.system(size: 40))
+        ZStack {
+            Circle()
+                .strokeBorder(dropTargeted ? Color.accentColor : Color.clear,
+                              style: StrokeStyle(lineWidth: 2, dash: dropTargeted ? [5, 3] : []))
+                .frame(width: 48, height: 48)
+            if let data = iconImageData, let image = NSImage(data: data) {
+                Image(nsImage: image)
+                    .resizable()
+                    .scaledToFill()
+                    .clipShape(Circle())
+            } else {
+                Text(emoji)
+                    .font(.system(size: 40))
+            }
         }
+    }
+
+    /// 拖拽导入:文件 URL 或图片数据 → 降采样 → 进裁剪
+    private func handleDrop(_ providers: [NSItemProvider]) -> Bool {
+        guard let provider = providers.first else { return false }
+        if provider.hasItemConformingToTypeIdentifier(UTType.fileURL.identifier) {
+            _ = provider.loadObject(ofClass: URL.self) { url, _ in
+                guard let url else { return }
+                DispatchQueue.main.async {
+                    if let data = IconImage.pngData(from: url) {
+                        Self.iconLog.info("拖拽文件导入 \(url.lastPathComponent, privacy: .public) \(data.count) bytes")
+                        withAnimation(.easeOut(duration: 0.15)) {
+                            cropSourceImage = NSImage(data: data)
+                            showsEmojiPicker = false
+                        }
+                    }
+                }
+            }
+            return true
+        }
+        if provider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
+            provider.loadDataRepresentation(forTypeIdentifier: UTType.image.identifier) { data, _ in
+                guard let data, let png = IconImage.pngData(fromImageData: data) else { return }
+                DispatchQueue.main.async {
+                    Self.iconLog.info("拖拽图片数据导入 \(png.count) bytes")
+                    withAnimation(.easeOut(duration: 0.15)) {
+                        cropSourceImage = NSImage(data: png)
+                        showsEmojiPicker = false
+                    }
+                }
+            }
+            return true
+        }
+        return false
     }
 
     /// 颜色行:预设色板右对齐,选中圆点外圈描边

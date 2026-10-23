@@ -1,68 +1,62 @@
 import AppKit
 import OSLog
+import UniformTypeIdentifiers
 
-/// 图标图片工具:导入时降采样到 256×256(列表 30pt/详情 44pt 足够,防大文件)
+/// 图标图片工具:统一降采样到 256×256(列表 30pt/详情 52pt 足够)。
+/// 导入通道:拖拽(文件 URL/图片数据)与剪贴板——不再使用 NSOpenPanel
+/// (其 modal 回调在 LSUIElement+未签名环境实测被静默丢弃,见 icon 日志)。
 enum IconImage {
     private static let log = Logger(subsystem: "app.louvane.Daymark", category: "icon")
     static let maxPixelSize: CGFloat = 256
 
-    /// 从磁盘图片生成降采样 PNG 数据;失败返回 nil
+    /// 内存降采样:PNG/JPEG 原始数据 → 256px PNG
+    static func pngData(fromImageData data: Data) -> Data? {
+        let sourceOptions: [CFString: Any] = [kCGImageSourceShouldCache: false]
+        guard let source = CGImageSourceCreateWithData(data as CFData, sourceOptions as CFDictionary) else { return nil }
+        return pngData(fromSource: source)
+    }
+
+    /// 文件 URL → 256px PNG
     static func pngData(from url: URL) -> Data? {
-        let options: [CFString: Any] = [
-            kCGImageSourceShouldCache: false,
-        ]
-        guard let source = CGImageSourceCreateWithURL(url as CFURL, options as CFDictionary) else { return nil }
+        guard let source = CGImageSourceCreateWithURL(url as CFURL, [kCGImageSourceShouldCache: false] as CFDictionary) else { return nil }
+        return pngData(fromSource: source)
+    }
+
+    private static func pngData(fromSource source: CGImageSource) -> Data? {
         let downOptions: [CFString: Any] = [
             kCGImageSourceCreateThumbnailFromImageAlways: true,
             kCGImageSourceCreateThumbnailWithTransform: true,
             kCGImageSourceThumbnailMaxPixelSize: maxPixelSize,
         ]
         guard let cg = CGImageSourceCreateThumbnailAtIndex(source, 0, downOptions as CFDictionary) else { return nil }
-        let bitmap = NSBitmapImageRep(cgImage: cg)
-        return bitmap.representation(using: .png, properties: [:])
+        return NSBitmapImageRep(cgImage: cg).representation(using: .png, properties: [:])
     }
 
-    /// 文件选择(模态 runModal:begin 在 LSUIElement 应用实测不弹窗),PNG/JPG,≤5MB
+    /// 剪贴板 → 256px PNG(支持复制的图片/截图/文件)
     @MainActor
-    static func pickFromPanel(onPick: @escaping (Data) -> Void) {
-        // LSUIElement(accessory)下 NSOpenPanel 实测不显示(begin/runModal 均然,
-        // adhoc 未签名环境)。标准修法:临时切 regular(保存面板的标准前提),
-        // 结束后回 accessory;Dock 图标会闪现一下,可接受。
-        StatusItemPanelController.shared.closePanel()
-        NSApp.setActivationPolicy(.regular)
-        NSApp.activate(ignoringOtherApps: true)
-        defer { NSApp.setActivationPolicy(.accessory) }
-
-        let panel = NSOpenPanel()
-        panel.allowedContentTypes = [.png, .jpeg]
-        panel.allowsMultipleSelection = false
-        panel.canChooseDirectories = false
-        panel.message = String(localized: "form.icon.pick.message")
-        let response = panel.runModal()
-        let handler = { (response: NSApplication.ModalResponse) in
-            guard response == .OK, let url = panel.url else {
-                if response != .OK { Self.log.info("用户取消选择") }
-                return
-            }
-            // 反正选完即降采样到 256,上限只是防呆(相机原图常见 10-20MB,故 50MB)
-            guard let size = (try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize) else {
-                Self.log.error("无法读取文件大小: \(url.lastPathComponent, privacy: .public)")
-                return
-            }
-            guard size <= 50 * 1024 * 1024 else {
-                Self.log.error("图片过大(\(size) bytes): \(url.lastPathComponent, privacy: .public)")
-                return
-            }
-            Self.log.info("选中文件 \(size) bytes")
-            if let data = pngData(from: url) {
-                Self.log.info("图片解码成功 \(data.count) bytes: \(url.lastPathComponent, privacy: .public)")
-                // 选图完成面板已收(为弹选择器),重开回到表单继续编辑
-                StatusItemPanelController.shared.showPanel()
-                onPick(data)
-            } else {
-                Self.log.error("图片解码失败: \(url.lastPathComponent, privacy: .public)")
+    static func pngDataFromPasteboard() -> Data? {
+        let pb = NSPasteboard.general
+        // 1) 直接的图片数据(png/tiff/jpeg)
+        for type in [NSPasteboard.PasteboardType.png, .tiff, NSPasteboard.PasteboardType("public.jpeg")] {
+            if let data = pb.data(forType: type), let png = pngData(fromImageData: data) {
+                log.info("剪贴板图片数据导入(\(type.rawValue, privacy: .public))")
+                return png
             }
         }
-        handler(response)
+        // 2) TIFF 兜底(NSImage 通用形态)
+        if let tiffData = (try? NSImage(pasteboard: pb))?.tiffRepresentation,
+           let png = pngData(fromImageData: tiffData) {
+            log.info("剪贴板 NSImage 导入")
+            return png
+        }
+        // 3) 复制的文件(Finder ⌘C)
+        if let urls = pb.readObjects(forClasses: [NSURL.self], options: nil) as? [URL],
+           let url = urls.first,
+           ["png", "jpg", "jpeg", "PNG", "JPG", "JPEG"].contains(url.pathExtension),
+           let png = pngData(from: url) {
+            log.info("剪贴板文件导入: \(url.lastPathComponent, privacy: .public)")
+            return png
+        }
+        return nil
     }
 }
