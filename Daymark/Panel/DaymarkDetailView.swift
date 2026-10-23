@@ -54,7 +54,17 @@ struct DaymarkDetailView: View {
             header
             Divider()
             ScrollView(showsIndicators: false) {
-                content
+                VStack(spacing: 14) {
+                    if confirmingDelete {
+                        confirmBar
+                            .transition(.opacity.combined(with: .move(edge: .top)))
+                    }
+                    hero
+                    numberBlock
+                }
+                .padding(.horizontal, 14)
+                .padding(.top, 14)
+                .padding(.bottom, 24)
             }
         }
         .navigationBarBackButtonHidden(true)
@@ -65,18 +75,17 @@ struct DaymarkDetailView: View {
 
     /// 滚动内容(抽离以便快照测试直接渲染,绕过 ScrollView 的 ImageRenderer 限制)
     var content: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 14) {
             if confirmingDelete {
                 confirmBar
                     .transition(.opacity.combined(with: .move(edge: .top)))
             }
             hero
             numberBlock
-            fieldsCard
         }
         .padding(.horizontal, 14)
         .padding(.top, 14)
-        .padding(.bottom, 24) // 底部呼吸空间:字段卡不再贴面板边缘
+        .padding(.bottom, 24)
     }
 
     /// 内联确认条(替代系统 confirmationDialog)
@@ -142,12 +151,11 @@ struct DaymarkDetailView: View {
             Image(nsImage: image)
                 .resizable()
                 .scaledToFill()
-                .frame(width: 68, height: 68)
+                .frame(width: 60, height: 60)
                 .clipShape(Circle())
-                .shadow(color: .black.opacity(0.10), radius: 4, y: 2)
         } else {
             Text(snapshot.emoji)
-                .font(.system(size: 48))
+                .font(.system(size: 44))
         }
     }
 
@@ -155,22 +163,43 @@ struct DaymarkDetailView: View {
     private var hero: some View {
         VStack(spacing: 10) {
             ZStack {
-                // 外层菱形描边
-                RoundedRectangle(cornerRadius: 26)
-                    .strokeBorder(Color.secondary.opacity(0.4), lineWidth: 1)
-                    .frame(width: 132, height: 132)
+                // 外层:旋转 45° 菱形描边(细线,四角突出)
+                RoundedRectangle(cornerRadius: 28)
+                    .strokeBorder(Color.secondary.opacity(0.35), lineWidth: 1)
+                    .frame(width: 134, height: 134)
                     .rotationEffect(.degrees(45))
-                // 内层菱形描边
-                RoundedRectangle(cornerRadius: 20)
-                    .strokeBorder(Color.secondary.opacity(0.3), lineWidth: 1)
-                    .frame(width: 102, height: 102)
-                    .rotationEffect(.degrees(45))
-                // 图标(圆形照片/Emoji)叠于中心
+                // 内层:正的圆角方,实底浅灰(承载图标)
+                RoundedRectangle(cornerRadius: 22)
+                    .fill(Color(nsColor: .windowBackgroundColor))
+                    .shadow(color: .black.opacity(0.06), radius: 5, y: 2)
+                    .frame(width: 96, height: 96)
                 heroIcon
             }
             .padding(.vertical, 6)
+
+            Text(snapshot.name)
+                .font(.title3.bold())
+                .multilineTextAlignment(.center)
+
+            metaLine
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
+    }
+
+    /// 元信息(Moment 式):[重复 ·] 日期 [· 已持续天数]
+    private var metaLine: Text {
+        var parts: [String] = []
+        if snapshot.repeatCycle != .none {
+            parts.append(String(localized: String.LocalizationValue(snapshot.repeatCycle.labelKey)))
+        }
+        parts.append(snapshot.startDate.formatted(date: .long, time: snapshot.hasTime ? .shortened : .omitted))
+        let elapsed = DateMath.daysBetween(snapshot.startDate, .now, in: DateMath.userCalendar())
+        if elapsed >= 1 {
+            parts.append(String(localized: "detail.meta.daysSince \(elapsed)"))
+        }
+        return Text(parts.joined(separator: " · "))
     }
 
     /// 超大数字块(Moment 式):灰底圆角矩形,主数字 + 单位
@@ -206,43 +235,6 @@ struct DaymarkDetailView: View {
         case .range(.inProgress(_, let total)):
             return String(localized: "meta.rangeTotal \(total)")
         }
-    }
-
-    private var fieldsCard: some View {
-        VStack(spacing: 0) {
-            fieldRow(labelKey: "detail.field.name", value: snapshot.name)
-            Divider().padding(.leading, 14)
-            fieldRow(labelKey: "detail.field.date") {
-                if snapshot.hasTime {
-                    Text(snapshot.startDate, format: .dateTime.year().month().day().hour().minute())
-                } else {
-                    Text(snapshot.startDate, format: .dateTime.year().month().day())
-                }
-            }
-            if let end = snapshot.endDate {
-                Divider().padding(.leading, 14)
-                fieldRow(labelKey: "detail.field.range") {
-                    Text("\(snapshot.startDate.formatted(date: .abbreviated, time: .omitted)) – \(end.formatted(date: .abbreviated, time: .omitted))")
-                        .lineLimit(1)
-                }
-            }
-            if snapshot.repeatCycle != .none {
-                Divider().padding(.leading, 14)
-                fieldRow(labelKey: "form.field.repeat") {
-                    Text(LocalizedStringKey(snapshot.repeatCycle.labelKey))
-                }
-            }
-            if snapshot.remindDays > 0 {
-                Divider().padding(.leading, 14)
-                fieldRow(labelKey: "detail.field.remind") {
-                    Text("remind.daysBefore \(snapshot.remindDays)")
-                }
-            }
-        }
-        .background(Color(nsColor: .windowBackgroundColor).opacity(0.55),
-                    in: RoundedRectangle(cornerRadius: 10))
-        .overlay(RoundedRectangle(cornerRadius: 10)
-            .stroke(Color(nsColor: .separatorColor).opacity(0.5), lineWidth: 1))
     }
 
     private func fieldRow(labelKey: LocalizedStringKey, value: String) -> some View {

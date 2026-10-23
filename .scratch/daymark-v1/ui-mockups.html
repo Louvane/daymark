@@ -94,8 +94,9 @@
   .name-sec input{border:none;outline:none;font-size:16px;font-weight:700;width:100%;color:var(--ink);background:transparent}
   /* 详情 */
   .hero{padding:18px 14px 14px;text-align:center}
-  .diamond{width:74px;height:74px;margin:6px auto 10px;border:1px solid #d5d5da;border-radius:14px;transform:rotate(45deg);display:flex;align-items:center;justify-content:center}
-  .diamond span{transform:rotate(-45deg);font-size:36px}
+  .diamond-outer{width:134px;height:134px;margin:8px auto 12px;border:1px solid #c9c9cf;border-radius:28px;transform:rotate(45deg)}
+  .diamond{width:96px;height:96px;background:#ececee;border-radius:22px;box-shadow:0 2px 6px rgba(0,0,0,.06);display:flex;align-items:center;justify-content:center}
+  .diamond span{font-size:44px}
   .hero .nm{font-size:16px;font-weight:700}
   .hero .mt{font-size:11px;color:var(--ink2);margin-top:3px}
   .numblock{margin:4px 14px 14px;background:var(--chip);border-radius:12px;text-align:center;padding:16px 0}
@@ -268,19 +269,13 @@ hover 120ms ease-out · 按压 scale .96 · 开关 180ms · 行出现 150ms fade
         </span>
       </div>
       <div class="hero">
-        <div class="diamond"><span>📌</span></div>
+        <div class="diamond-outer"><div class="diamond"><span>🎂</span></div></div>
         <div class="nm">生日</div>
-        <div class="mt">2026年12月24日</div>
+        <div class="mt">每年 · 2026年12月24日</div>
       </div>
       <div class="numblock"><b>63</b><i>天</i></div>
-      <div class="card">
-        <div class="frow"><span class="lab">名称</span><span class="val">生日</span></div>
-        <div class="frow"><span class="lab">日期</span><span class="val">2026年12月24日</span></div>
-        <div class="frow"><span class="lab">重复</span><span class="val">每年</span></div>
-        <div class="frow"><span class="lab">提醒</span><span class="val">提前 1 天</span></div>
-      </div>
     </div>
-    <div class="cap">④ 详情:← | 详情居中 | 编辑+🗑 · 菱形 Emoji → 名称 → 大数字块 → 字段卡</div>
+    <div class="cap">④ 详情:← | 详情居中 | 编辑+🗑 · 双层菱形图标 → 名称 → 日期·天数 → 大数字块(无字段表格)</div>
   </div>
   <div>
     <div class="phone"><i class="notch"></i>
@@ -294,15 +289,11 @@ hover 120ms ease-out · 按压 scale .96 · 开关 180ms · 行出现 150ms fade
       </div>
       <div class="confirmbar"><span class="q">删除这条日标?</span><button class="btn ghost">取消</button><button class="btn danger">删除</button></div>
       <div class="hero">
-        <div class="diamond"><span>✈️</span></div>
+        <div class="diamond-outer"><div class="diamond"><span>✈️</span></div></div>
         <div class="nm">日本旅行</div>
-        <div class="mt">2026年11月1日 – 11月5日</div>
+        <div class="mt">2026年11月1日 – 11月5日 · 未开始</div>
       </div>
       <div class="numblock"><b>10</b><i>天</i></div>
-      <div class="card">
-        <div class="frow"><span class="lab">日期</span><span class="val">2026年11月1日</span></div>
-        <div class="frow"><span class="lab">区间</span><span class="val">11月1日 – 11月5日</span></div>
-      </div>
     </div>
     <div class="cap">⑤ 详情 · 内联删除确认条(顶部红底,替代系统弹层)</div>
   </div>
@@ -457,3 +448,47 @@ if(formPhone){
   }
 }
 </script>
+
+<h2>⑤ 设计储备(v1.5,来自 Moment 参考截图)</h2>
+<div class="spec">
+<b>事件分类驱动表单</b>(Moment:编辑日期 / 编辑年龄 / 时间进度 三类):
+表单字段随分类变化——日期类:名称+日期(+区间/时刻/重复/提醒,即 v1 现有);
+年龄类:名称+出生日期+单位(岁);进度类:名称+开始/结束时间+提醒。
+<br><b>进度类不设图标</b>:列表与详情用<b>固定的动态圆环</b>渲染(颜色随类型,如日进度绿、年进度蓝,
+  环形进度 = 已流逝百分比),不显示 Emoji/照片。
+<br>落地节奏:年龄=v2;进度环+分类表单=v1.5(见 README Roadmap)。
+</div>
+<div class="grid">
+  <div>
+    <div class="phone">
+      <div class="hdr">
+        <span class="left"><span class="ic"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></span></span>
+        <span class="title">详情</span>
+        <span class="right"><span style="font-size:12.5px;color:#555">编辑</span></span>
+      </div>
+      <div class="hero">
+        <div class="diamond-outer"><div class="diamond"><span style="font-size:0"><i style="display:inline-block;width:58px;height:58px;border-radius:50%;border:10px solid #4f6ef7"></i></span></div></div>
+      </div>
+      <div class="numblock"><b>99.64</b><i>%</i></div>
+      <div class="card">
+        <div class="frow"><span class="lab">类型</span><span class="val">按年进度</span></div>
+        <div class="frow"><span class="lab">进度</span><span class="val">364天 / 365天 · 已过去</span></div>
+      </div>
+    </div>
+    <div class="cap">进度类详情:固定动态圆环(无图标设置)——v1.5 示意</div>
+  </div>
+  <div>
+    <div class="phone">
+      <div class="hdr">
+        <span class="left"><span class="ic"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></span></span>
+        <span class="title">时间进度</span>
+        <span class="right"><span class="ic b"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span></span>
+      </div>
+      <div class="frow"><span class="lab">名称</span><span class="val" style="flex:1;justify-content:flex-end"><input value="坚持健身 100 天" style="border:none;outline:none;font-size:13px;font-weight:600;text-align:right;width:150px;background:transparent"></span></div>
+      <div class="frow"><span class="lab">开始时间</span><span class="val sel">2025/12/30</span></div>
+      <div class="frow"><span class="lab">结束时间</span><span class="val sel">2026/4/9</span></div>
+      <div class="frow"><span class="lab">提醒</span><span class="val sel">不提醒</span></div>
+    </div>
+    <div class="cap">进度类表单:无图标/颜色设置(圆环固定动态)——v1.5 示意</div>
+  </div>
+</div>
