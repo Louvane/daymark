@@ -142,7 +142,7 @@ struct DaymarkDetailView: View {
             Image(nsImage: image)
                 .resizable()
                 .scaledToFill()
-                .frame(width: 60, height: 60)
+                .frame(width: 84, height: 84)
                 .clipShape(Circle())
         } else {
             Text(snapshot.emoji)
@@ -154,13 +154,13 @@ struct DaymarkDetailView: View {
     private var hero: some View {
         VStack(spacing: 10) {
             ZStack {
-                RoundedRectangle(cornerRadius: 14)
+                RoundedRectangle(cornerRadius: 18)
                     .strokeBorder(Color.secondary.opacity(0.3), lineWidth: 1)
-                    .frame(width: 86, height: 86)
+                    .frame(width: 120, height: 120)
                     .rotationEffect(.degrees(45))
                 heroIcon
             }
-            .padding(.vertical, 4)
+            .padding(.vertical, 6)
 
             Text(snapshot.name)
                 .font(.title3.bold())
