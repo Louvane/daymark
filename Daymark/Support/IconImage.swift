@@ -2,10 +2,36 @@ import AppKit
 import OSLog
 import UniformTypeIdentifiers
 
-/// 图标图片工具:统一降采样到 256×256(列表 30pt/详情 52pt 足够)。
-/// 导入通道:拖拽(文件 URL/图片数据)与剪贴板——不再使用 NSOpenPanel
-/// (其 modal 回调在 LSUIElement+未签名环境实测被静默丢弃,见 icon 日志)。
+/// 图标图片工具:统一降采样到 256×256。
+/// 文件选择:NSOpenPanel.runModal,不切 activation policy(切换会引发 XPC
+/// 会话动荡、回调丢失),仅激活应用 + floating 层级保证窗口置前可见。
 enum IconImage {
+
+    /// 文件选择(PNG/JPG):返回 256px PNG 数据;取消返回 nil
+    @MainActor
+    static func pickImageFile() -> Data? {
+        StatusItemPanelController.shared.closePanel()
+        NSApp.activate(ignoringOtherApps: true)
+
+        let panel = NSOpenPanel()
+        panel.allowedContentTypes = [.png, .jpeg]
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.message = String(localized: "form.icon.pick.message")
+        panel.level = .floating
+        let response = panel.runModal()
+        log.info("runModal 返回 raw=\(response.rawValue) url=\(panel.url?.lastPathComponent ?? "nil", privacy: .public)")
+        guard response == .OK, let url = panel.url else { return nil }
+        guard let png = pngData(from: url) else {
+            log.error("解码失败: \(url.lastPathComponent, privacy: .public)")
+            return nil
+        }
+        log.info("文件导入成功 \(png.count) bytes")
+        // 回到表单
+        StatusItemPanelController.shared.showPanel()
+        return png
+    }
+
     private static let log = Logger(subsystem: "app.louvane.Daymark", category: "icon")
     static let maxPixelSize: CGFloat = 256
 

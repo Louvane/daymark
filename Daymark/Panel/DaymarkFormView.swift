@@ -71,6 +71,23 @@ struct DaymarkFormView: View {
             }
         }
         .animation(.easeOut(duration: 0.18), value: showsEmojiPicker)
+        .overlay {
+            // 圆形取景裁剪:选图后覆盖表单,使用/取消后收回
+            if let source = cropSourceImage {
+                IconCropView(
+                    image: source,
+                    onConfirm: { data in
+                        withAnimation(.easeOut(duration: 0.15)) {
+                            iconImageData = data
+                            cropSourceImage = nil
+                        }
+                    },
+                    onCancel: {
+                        withAnimation(.easeOut(duration: 0.15)) { cropSourceImage = nil }
+                    }
+                )
+            }
+        }
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .windowToolbar)
         .toolbarBackground(.hidden, for: .windowToolbar)
@@ -153,25 +170,23 @@ struct DaymarkFormView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
-            // 导入(剪贴板)/ 移除图片
+            // 导入图片(文件选择)/ 移除图片
             Button {
                 if iconImageData != nil {
                     iconImageData = nil
-                } else if let data = IconImage.pngDataFromPasteboard() {
+                } else if let data = IconImage.pickImageFile() {
                     Self.iconLog.info("表单收到图片数据 \(data.count) bytes,进入裁剪")
                     withAnimation(.easeOut(duration: 0.15)) {
                         cropSourceImage = NSImage(data: data)
                         showsEmojiPicker = false
                     }
-                } else {
-                    Self.iconLog.info("剪贴板无可用图片(拖拽或复制后再试)")
                 }
             } label: {
                 Image(systemName: iconImageData != nil ? "photo.badge.xmark" : "photo")
                     .font(.system(size: 14))
             }
             .buttonStyle(HoverIconButtonStyle())
-            .help(Text(iconImageData != nil ? "form.icon.remove" : "form.icon.import.clipboard"))
+            .help(Text(iconImageData != nil ? "form.icon.remove" : "form.icon.import"))
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
@@ -302,14 +317,12 @@ struct DaymarkFormView: View {
             }
             Divider().padding(.leading, 14)
             formRow(labelKey: "form.field.remind") {
-                Picker("", selection: $remindDays) {
-                    Text("remind.none").tag(0)
-                    ForEach(Self.remindDayOptions, id: \.self) { days in
-                        Text("remind.daysBefore \(days)").tag(days)
-                    }
-                }
-                .labelsHidden()
-                .frame(width: 118)
+                FormDropdown(titleKey: "form.field.remind",
+                             options: [(value: 0, label: Text("remind.none"))]
+                                 + Self.remindDayOptions.map {
+                                     (value: $0, label: Text("remind.option \($0)"))
+                                 },
+                             selection: $remindDays)
             }
         }
     }

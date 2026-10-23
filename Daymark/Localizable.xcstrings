@@ -701,19 +701,36 @@
         }
       }
     },
-    "form.icon.import.clipboard": {
+    "form.icon.import": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Copy or screenshot, then click (or drag an image here)"
+            "value": "Import photo (or drag onto the icon)"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "复制或截图后点此导入(也可拖拽图片到此)"
+            "value": "导入图片(也可拖拽到图标)"
+          }
+        }
+      }
+    },
+    "form.icon.pick.message": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose an image as the icon"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择一张图片作为图标"
           }
         }
       }
