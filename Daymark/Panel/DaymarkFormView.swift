@@ -1,4 +1,5 @@
 import SwiftUI
+import os.log
 
 /// 创建/编辑复用的同一表单(Moment 式平铺行):
 /// 头部 ← | 标题居中 | ✓ 保存;大 Emoji + 😊 选择按钮;名称小标签 + 大字输入;
@@ -52,6 +53,7 @@ struct DaymarkFormView: View {
 
     /// 可选提前提醒天数
     static let remindDayOptions = [1, 2, 3, 7, 14, 30]
+    private static let iconLog = Logger(subsystem: "app.louvane.Daymark", category: "icon")
 
     private var cleanedName: String {
         name.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -151,6 +153,7 @@ struct DaymarkFormView: View {
                     iconImageData = nil
                 } else {
                     IconImage.pickFromPanel { data in
+                        Self.iconLog.info("表单收到图片数据 \(data.count) bytes")
                         withAnimation(.easeOut(duration: 0.15)) {
                             iconImageData = data
                             showsEmojiPicker = false
@@ -175,7 +178,7 @@ struct DaymarkFormView: View {
             Image(nsImage: image)
                 .resizable()
                 .scaledToFill()
-                .clipShape(RoundedRectangle(cornerRadius: 9))
+                .clipShape(Circle())
         } else {
             Text(emoji)
                 .font(.system(size: 40))

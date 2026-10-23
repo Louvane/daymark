@@ -22,31 +22,45 @@ enum IconImage {
         return bitmap.representation(using: .png, properties: [:])
     }
 
-    /// 文件选择(非模态 begin,适配非激活面板),PNG/JPG,≤5MB
+    /// 文件选择(模态 runModal:begin 在 LSUIElement 应用实测不弹窗),PNG/JPG,≤5MB
     @MainActor
     static func pickFromPanel(onPick: @escaping (Data) -> Void) {
-        // LSUIElement 未激活时新窗 z 序垫底,且菜单栏面板(statusBar 层级)会盖住
-        // 一切普通窗口(含本选择器):必须先收面板 + 激活应用
+        // LSUIElement(accessory)下 NSOpenPanel 实测不显示(begin/runModal 均然,
+        // adhoc 未签名环境)。标准修法:临时切 regular(保存面板的标准前提),
+        // 结束后回 accessory;Dock 图标会闪现一下,可接受。
         StatusItemPanelController.shared.closePanel()
+        NSApp.setActivationPolicy(.regular)
         NSApp.activate(ignoringOtherApps: true)
+        defer { NSApp.setActivationPolicy(.accessory) }
 
         let panel = NSOpenPanel()
         panel.allowedContentTypes = [.png, .jpeg]
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false
         panel.message = String(localized: "form.icon.pick.message")
-        panel.level = .floating // 双保险:浮于普通窗口之上
-        panel.begin { response in
-            guard response == .OK, let url = panel.url,
-                  let size = (try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize), size <= 5 * 1024 * 1024 else {
-                if response == .OK { Self.log.error("图片过大或不可读") }
+        let response = panel.runModal()
+        let handler = { (response: NSApplication.ModalResponse) in
+            guard response == .OK, let url = panel.url else {
+                if response != .OK { Self.log.info("用户取消选择") }
                 return
             }
+            // 反正选完即降采样到 256,上限只是防呆(相机原图常见 10-20MB,故 50MB)
+            guard let size = (try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize) else {
+                Self.log.error("无法读取文件大小: \(url.lastPathComponent, privacy: .public)")
+                return
+            }
+            guard size <= 50 * 1024 * 1024 else {
+                Self.log.error("图片过大(\(size) bytes): \(url.lastPathComponent, privacy: .public)")
+                return
+            }
+            Self.log.info("选中文件 \(size) bytes")
             if let data = pngData(from: url) {
+                Self.log.info("图片解码成功 \(data.count) bytes: \(url.lastPathComponent, privacy: .public)")
                 onPick(data)
             } else {
-                Self.log.error("图片解码失败")
+                Self.log.error("图片解码失败: \(url.lastPathComponent, privacy: .public)")
             }
         }
+        handler(response)
     }
 }

@@ -143,7 +143,7 @@ struct DaymarkDetailView: View {
                 .resizable()
                 .scaledToFill()
                 .frame(width: 52, height: 52)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .clipShape(Circle())
         } else {
             Text(snapshot.emoji)
                 .font(.system(size: 44))

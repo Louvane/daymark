@@ -724,13 +724,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Choose an image as the icon (≤5MB)"
+            "value": "Choose an image as the icon (≤50MB)"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "选择一张图片作为图标(≤5MB)"
+            "value": "选择一张图片作为图标(≤50MB)"
           }
         }
       }

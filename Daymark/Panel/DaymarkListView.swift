@@ -380,7 +380,7 @@ struct DaymarkListRow: View {
                 .resizable()
                 .scaledToFill()
                 .frame(width: 28, height: 28)
-                .clipShape(RoundedRectangle(cornerRadius: 6))
+                .clipShape(Circle())
         } else {
             Text(snapshot.emoji)
                 .font(.title3)
