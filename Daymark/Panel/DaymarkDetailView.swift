@@ -169,26 +169,8 @@ struct DaymarkDetailView: View {
                 heroIcon
             }
             .padding(.vertical, 6)
-
-            Text(snapshot.name)
-                .font(.title3.bold())
-                .multilineTextAlignment(.center)
-
-            metaLine
-                .font(.caption)
-                .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
-    }
-
-    /// 元信息:日期 · 已持续/剩余天数
-    private var metaLine: Text {
-        let days = DateMath.daysBetween(snapshot.startDate, .now, in: DateMath.userCalendar())
-        let dateText = snapshot.startDate.formatted(date: .long, time: .omitted)
-        if days >= 0 {
-            return Text("\(dateText) · " + String(localized: "detail.meta.daysSince \(days)"))
-        }
-        return Text(dateText)
     }
 
     /// 超大数字块(Moment 式):灰底圆角矩形,主数字 + 单位
