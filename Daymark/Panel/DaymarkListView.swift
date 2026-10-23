@@ -164,7 +164,7 @@ struct DaymarkListView: View {
     /// 两种模式同一容器;拖拽期间渲染 dragOrder,其他行实时让位
     @ViewBuilder
     private var list: some View {
-        ScrollView(showsIndicators: false) {
+        ScrollView {
             LazyVStack(spacing: 0) {
                 let order = isDragging ? dragOrder : sorted
                 ForEach(order, id: \.id) { item in

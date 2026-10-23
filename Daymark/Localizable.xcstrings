@@ -1285,23 +1285,6 @@
         }
       }
     },
-    "settings.about.credit": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Inspired by Moment. Not an official clone."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "受 Moment 启发,非官方复刻。"
-          }
-        }
-      }
-    },
     "settings.about.github": {
       "extractionState": "manual",
       "localizations": {

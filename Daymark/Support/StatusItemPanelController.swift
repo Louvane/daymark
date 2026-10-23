@@ -37,6 +37,13 @@ final class StatusItemPanelController: NSObject, NSWindowDelegate {
         defer: false
     )
     private var isSetUp = false
+    /// 面板高度自适应上下限(内容少收紧,多则封顶滚动)
+    private let minPanelHeight: CGFloat = 360
+    private let maxPanelHeight: CGFloat = 560
+    /// 内容宿主(监听其 intrinsicContentSize 驱动面板高度)
+    private var hostingView: NSHostingView<AnyView>?
+    private var lastMenuBarBottomY: CGFloat = 0
+    private var observation: NSKeyValueObservation?
     /// 面板打开期间的全局点击监听:点面板外任意处收起
     /// (非激活面板的 resignKey 在切空间/点桌面等场景不可靠,故用全局监听兜底)
     private var outsideClickMonitor: Any?
@@ -68,7 +75,13 @@ final class StatusItemPanelController: NSObject, NSWindowDelegate {
             .environment(context.settings)
             .environment(context.router)
             .modelContainer(context.store.container)
-        panel.contentView = NSHostingView(rootView: root)
+        let hosting = NSHostingView(rootView: AnyView(root))
+        panel.contentView = hosting
+        hostingView = hosting
+        // 内容理想尺寸变化 → 面板高度自适应(clamp 360...560,顶部锚定)
+        observation = hosting.observe(\.intrinsicContentSize, options: [.new]) { [weak self] _, _ in
+            Task { @MainActor in self?.syncPanelHeight() }
+        }
     }
 
     private static let log = Logger(subsystem: "app.louvane.Daymark", category: "panel")
@@ -88,7 +101,9 @@ final class StatusItemPanelController: NSObject, NSWindowDelegate {
             Self.log.error("showPanel: guard 失败 button=\(self.statusItem?.button != nil)")
             return
         }
+        lastMenuBarBottomY = buttonWindow.frame.minY
         positionPanel(under: button, in: buttonWindow, on: screen)
+        syncPanelHeight()
         panel.makeKeyAndOrderFront(nil)
         statusItem?.button?.highlight(true)
     }
@@ -96,6 +111,18 @@ final class StatusItemPanelController: NSObject, NSWindowDelegate {
     func closePanel() {
         panel.orderOut(nil)
         statusItem?.button?.highlight(false)
+    }
+
+    /// 面板高度 = 内容理想高度(clamp 360...560);顶缘锚定菜单栏下方
+    private func syncPanelHeight() {
+        guard let hosting = hostingView, panel.isVisible || panel == panel else { return }
+        let ideal = hosting.intrinsicContentSize.height
+        let target = min(max(ideal, minPanelHeight), maxPanelHeight)
+        var frame = panel.frame
+        guard abs(frame.height - target) > 1 else { return }
+        frame.origin.y = lastMenuBarBottomY - 4 - target
+        frame.size.height = target
+        panel.setFrame(frame, display: false)
     }
 
     /// 图标中轴线正对面板中线:以辅助功能框为准(与渲染出的高亮胶囊一致;

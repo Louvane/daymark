@@ -116,9 +116,6 @@ struct AboutSettingsView: View {
             Text("settings.about.license")
                 .font(.caption)
                 .foregroundStyle(.secondary)
-            Text("settings.about.credit")
-                .font(.caption)
-                .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.bottom, 16)
