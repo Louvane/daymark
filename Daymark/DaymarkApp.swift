@@ -3,8 +3,8 @@ import SwiftUI
 import UserNotifications
 
 // 应用入口:LSUIElement 菜单栏应用。
-// 面板由 StatusItemPanelController(NSStatusItem + NSPanel)承载(见 Support/),
-// 此处仅保留 Settings 场景。
+// 面板由 StatusItemPanelController(NSStatusItem + NSPanel)承载,
+// 设置窗口由 SettingsWindowController 托管(均见 Support/)。
 @main
 struct DaymarkApp: App {
     @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
@@ -24,11 +24,8 @@ struct DaymarkApp: App {
     }
 
     var body: some Scene {
-        Settings {
-            SettingsView()
-                .environment(AppContext.shared.store)
-                .environment(AppContext.shared.settings)
-        }
+        // 场景清单为空:窗口全部由 AppKit 侧控制器托管
+        Settings { } 
     }
 }
 

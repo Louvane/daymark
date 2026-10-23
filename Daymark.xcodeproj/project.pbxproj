@@ -20,9 +20,11 @@
 		4B7A40C3EDC9893C5E7B6D66 /* HoverIconButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C919B130B655EE757D6BC2E7 /* HoverIconButtonStyle.swift */; };
 		4D500929D00B4378D30B61F0 /* DaymarkApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DBFA2EA959C8B177C7D8F95 /* DaymarkApp.swift */; };
 		663DA222945C92A9F1FDE807 /* EmojiPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FDDFA34476624C1FC22748 /* EmojiPickerView.swift */; };
+		7400697B9878B81D7D9E0FD3 /* SettingsOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124EB6B55F0D1BEEF55959CF /* SettingsOpener.swift */; };
 		752B460B09B160D26194C448 /* NotificationRouting.swift in Sources */ = {isa = PBXBuildFile; fileRef = B495990DC550968B746B961E /* NotificationRouting.swift */; };
 		7C0E4BAA510918394D681BB3 /* CountdownText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372DF11EDF859313D9FE174D /* CountdownText.swift */; };
 		7C822CACA3FD646B21321D4D /* UISnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91BF98219574A5CC9B98719 /* UISnapshotTests.swift */; };
+		7F85267866CF93AEE5E11A74 /* SettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F1C176321C6DEB1CBE21D2 /* SettingsWindowController.swift */; };
 		872BCA8DF5268B37AD7AAA1F /* DaymarkStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92AFC5FB0348102CB2E8B52F /* DaymarkStatus.swift */; };
 		909B3EEFDF44C0F3E68C32CE /* ReminderPlanning.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE92414DF78C73CF81E743D3 /* ReminderPlanning.swift */; };
 		98BBF0C72002CFB051E16F8A /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E3B772AC23C37972AC46DC /* SettingsTests.swift */; };
@@ -55,11 +57,13 @@
 /* Begin PBXFileReference section */
 		023E287F547D6A9F14C15F67 /* ColorPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPalette.swift; sourceTree = "<group>"; };
 		085369E4FF8267DCE6DC35E2 /* DateMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateMath.swift; sourceTree = "<group>"; };
+		124EB6B55F0D1BEEF55959CF /* SettingsOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsOpener.swift; sourceTree = "<group>"; };
 		167E8B11D66FF3CD20A81DA4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		1AA5A93B4978567B92ABE0E3 /* DaymarkURLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaymarkURLParser.swift; sourceTree = "<group>"; };
 		216A116D552D838931F1A800 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2545B87F88B7D7977ECF2AA6 /* SmokeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmokeTests.swift; sourceTree = "<group>"; };
 		27229751F367A1DF381FA73E /* DaymarkDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaymarkDetailView.swift; sourceTree = "<group>"; };
+		31F1C176321C6DEB1CBE21D2 /* SettingsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindowController.swift; sourceTree = "<group>"; };
 		31F3532E4B0612B196A5E427 /* DaymarkFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaymarkFormView.swift; sourceTree = "<group>"; };
 		372DF11EDF859313D9FE174D /* CountdownText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownText.swift; sourceTree = "<group>"; };
 		39FDDFA34476624C1FC22748 /* EmojiPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiPickerView.swift; sourceTree = "<group>"; };
@@ -157,6 +161,8 @@
 			isa = PBXGroup;
 			children = (
 				B495990DC550968B746B961E /* NotificationRouting.swift */,
+				124EB6B55F0D1BEEF55959CF /* SettingsOpener.swift */,
+				31F1C176321C6DEB1CBE21D2 /* SettingsWindowController.swift */,
 				DF7F9015B69855BB39034FBD /* StatusItemPanelController.swift */,
 			);
 			path = Support;
@@ -321,7 +327,9 @@
 				909B3EEFDF44C0F3E68C32CE /* ReminderPlanning.swift in Sources */,
 				F39A9A2B224D4513B4BD353F /* ReminderScheduling.swift in Sources */,
 				D7F73FEC81998CE78AC777A8 /* RepeatCycle.swift in Sources */,
+				7400697B9878B81D7D9E0FD3 /* SettingsOpener.swift in Sources */,
 				ABB8BBF4C73C9E860D450699 /* SettingsView.swift in Sources */,
+				7F85267866CF93AEE5E11A74 /* SettingsWindowController.swift in Sources */,
 				A02FE690667DEBB7FFEE75A2 /* StatusItemPanelController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

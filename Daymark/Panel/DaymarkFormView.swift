@@ -67,11 +67,22 @@ struct DaymarkFormView: View {
         .navigationBarBackButtonHidden(true)
     }
 
-    /// 表单内容(抽离以便快照测试直接渲染)
+    /// 表单内容(抽离以便快照测试直接渲染)。
+    /// Emoji 选择器紧贴 Emoji 行下方展开——放表单尾部会滚出可视区,看起来像点击无效。
     @ViewBuilder
     var content: some View {
         VStack(spacing: 0) {
             emojiRow
+            if showsEmojiPicker {
+                VStack(spacing: 8) {
+                    EmojiPickerView(selection: $emoji, onDone: { withAnimation(.easeOut(duration: 0.15)) { showsEmojiPicker = false } })
+                }
+                .padding(12)
+                .background(.quaternary.opacity(0.35), in: RoundedRectangle(cornerRadius: 10))
+                .padding(.horizontal, 14)
+                .padding(.bottom, 10)
+                .transition(.opacity.combined(with: .scale(0.96, anchor: .top)))
+            }
             Divider().padding(.leading, 14)
             colorRow
             Divider().padding(.leading, 14)
@@ -80,16 +91,6 @@ struct DaymarkFormView: View {
             formRows
         }
         .padding(.vertical, 6)
-        if showsEmojiPicker {
-            VStack(spacing: 8) {
-                EmojiPickerView(selection: $emoji, onDone: { showsEmojiPicker = false })
-            }
-            .padding(12)
-            .background(.quaternary.opacity(0.35), in: RoundedRectangle(cornerRadius: 10))
-            .padding(.horizontal, 14)
-            .padding(.bottom, 10)
-            .transition(.opacity.combined(with: .scale(0.96, anchor: .top)))
-        }
     }
 
     /// 头部:← | 标题居中 | ✓ 保存

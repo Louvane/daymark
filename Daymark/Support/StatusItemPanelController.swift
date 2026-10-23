@@ -1,4 +1,5 @@
 import AppKit
+import os.log
 import SwiftUI
 
 /// 应用级单例:App(AppKit 侧)与 SwiftUI 侧共享的存储/设置/路由
@@ -18,20 +19,6 @@ final class AppContext {
             fatalError("无法初始化 SwiftData 容器:\(error)")
         }
     }()
-}
-
-/// 打开 SwiftUI Settings 场景(面板齿轮入口)
-@MainActor
-enum SettingsOpener {
-    static func open() {
-        NSApp.activate(ignoringOtherApps: true)
-        // SwiftUI Settings 场景没有公开打开 API,系统响应此动作(macOS 13+ 通用做法)
-        NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
-        // 窗口异步创建,稍后再抢一次焦点,保证压在其他应用之上
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            NSApp.activate(ignoringOtherApps: true)
-        }
-    }
 }
 
 /// 菜单栏状态项 + 自绘面板:NSStatusItem + NSPanel(非激活式)。
@@ -79,7 +66,10 @@ final class StatusItemPanelController: NSObject, NSWindowDelegate {
         panel.contentView = NSHostingView(rootView: root)
     }
 
+    private static let log = Logger(subsystem: "app.louvane.Daymark", category: "panel")
+
     @objc private func togglePanel() {
+        Self.log.info("togglePanel: visible=\(self.panel.isVisible)")
         if panel.isVisible {
             closePanel()
         } else {
@@ -89,7 +79,10 @@ final class StatusItemPanelController: NSObject, NSWindowDelegate {
 
     func showPanel() {
         guard let button = statusItem?.button, let buttonWindow = button.window,
-              let screen = buttonWindow.screen ?? NSScreen.main else { return }
+              let screen = buttonWindow.screen ?? NSScreen.main else {
+            Self.log.error("showPanel: guard 失败 button=\(self.statusItem?.button != nil)")
+            return
+        }
         positionPanel(under: button, in: buttonWindow, on: screen)
         panel.makeKeyAndOrderFront(nil)
         statusItem?.button?.highlight(true)

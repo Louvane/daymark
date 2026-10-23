@@ -120,7 +120,7 @@ struct DaymarkListView: View {
                 } label: {
                     Image(systemName: "gearshape")
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(HoverIconButtonStyle())
                 .help(Text("list.settings.help"))
                 Spacer()
                 HStack(spacing: 10) {
