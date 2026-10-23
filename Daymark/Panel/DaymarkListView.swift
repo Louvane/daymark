@@ -316,13 +316,13 @@ struct DaymarkListRow: View {
             Button(action: onOpen) {
                 HStack(spacing: 10) {
                     iconView
-                        .frame(width: 30)
+                        .frame(width: 32)
                     VStack(alignment: .leading, spacing: 2) {
                         Text(snapshot.name)
-                            .font(.body.bold())
+                            .font(.system(size: 14, weight: .semibold))
                             .lineLimit(1)
                         metaText
-                            .font(.caption2)
+                            .font(.caption)
                             .foregroundStyle(.secondary)
                             .lineLimit(1)
                     }
@@ -379,11 +379,11 @@ struct DaymarkListRow: View {
             Image(nsImage: image)
                 .resizable()
                 .scaledToFill()
-                .frame(width: 28, height: 28)
+                .frame(width: 30, height: 30)
                 .clipShape(Circle())
         } else {
             Text(snapshot.emoji)
-                .font(.title3)
+                .font(.system(size: 19))
         }
     }
 
