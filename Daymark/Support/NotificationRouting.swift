@@ -43,6 +43,8 @@ final class QuickCreateWindowController {
     }
 
     func show(prefill: DaymarkURLPayload?) {
+        // 面板为 statusBar 高层级,先收起避免遮挡新窗
+        StatusItemPanelController.shared.closePanel()
         guard let store else { return }
         let window = ensureWindow()
         // 表单保存/返回即关窗;环境注入与面板同源

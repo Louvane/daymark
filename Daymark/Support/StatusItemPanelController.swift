@@ -28,13 +28,18 @@ final class StatusItemPanelController: NSObject, NSWindowDelegate {
     static let shared = StatusItemPanelController()
 
     private var statusItem: NSStatusItem?
-    private let panel = NSPanel(
+    /// borderless 面板默认 canBecomeKey = false → 永远不会 resign → 无法「点外部关闭」;
+    /// 必须子类化重写(经典 NSPanel 坑)
+    private let panel = PanelWindow(
         contentRect: NSRect(x: 0, y: 0, width: 320, height: 452),
         styleMask: [.borderless, .nonactivatingPanel],
         backing: .buffered,
         defer: false
     )
     private var isSetUp = false
+    /// 面板打开期间的全局点击监听:点面板外任意处收起
+    /// (非激活面板的 resignKey 在切空间/点桌面等场景不可靠,故用全局监听兜底)
+    private var outsideClickMonitor: Any?
 
     /// 启动时装配状态项与面板(幂等)
     func setup(context: AppContext) {
@@ -108,7 +113,13 @@ final class StatusItemPanelController: NSObject, NSWindowDelegate {
     }
 
     func windowDidResignKey(_ notification: Notification) {
+        Self.log.info("面板失去 key(点击其他应用/桌面)")
         // 失焦自动关闭,与 MenuBarExtra 行为一致
         closePanel()
     }
+}
+
+/// 可成为 key 窗口的无边框面板
+final class PanelWindow: NSPanel {
+    override var canBecomeKey: Bool { true }
 }
