@@ -391,11 +391,11 @@ struct DaymarkListRow: View {
     private var badge: some View {
         VStack(alignment: .trailing, spacing: 0) {
             Text(badgeNumber)
-                .font(.title3.bold())
+                .font(.title2.bold())
                 .monospacedDigit()
                 .foregroundStyle(DaymarkColorPalette.color(at: snapshot.colorIndex))
             Text(badgeUnit)
-                .font(.caption2)
+                .font(.caption)
                 .foregroundStyle(.secondary)
         }
     }
