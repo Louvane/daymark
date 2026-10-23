@@ -65,6 +65,7 @@ struct DaymarkFormView: View {
         }
         .animation(.easeOut(duration: 0.18), value: showsEmojiPicker)
         .navigationBarBackButtonHidden(true)
+        .toolbar(.hidden, for: .windowToolbar)
     }
 
     /// 表单内容(抽离以便快照测试直接渲染)。
