@@ -168,24 +168,32 @@ struct DaymarkListView: View {
             LazyVStack(spacing: 0) {
                 let order = isDragging ? dragOrder : sorted
                 ForEach(order, id: \.id) { item in
+                    let lifting = dragItemID == item.id
                     row(item)
-                        .background(
-                            RoundedRectangle(cornerRadius: 10)
-                                .fill(dragItemID == item.id
-                                      ? Color(nsColor: .windowBackgroundColor)
-                                      : Color.clear)
-                                .shadow(color: dragItemID == item.id ? .black.opacity(0.25) : .clear,
-                                        radius: dragItemID == item.id ? 12 : 0, y: 6)
-                        )
-                        .scaleEffect(dragItemID == item.id ? 1.04 : 1)
-                        .offset(y: dragItemID == item.id ? dragVisualOffset : 0)
-                        .zIndex(dragItemID == item.id ? 1 : 0)
+                        // 浮起卡片:出现/退出禁用动画(否则结束时白→透明被播成"闪白")
+                        .background {
+                            ZStack {
+                                if lifting {
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .fill(Color(nsColor: .controlBackgroundColor))
+                                        .shadow(color: .black.opacity(0.3), radius: 14, y: 6)
+                                        .transition(.identity)
+                                        .transaction { $0.animation = nil }
+                                }
+                            }
+                        }
+                        .scaleEffect(lifting ? 1.03 : 1)
+                        .offset(y: lifting ? dragVisualOffset : 0)
+                        .zIndex(lifting ? 1 : 0)
                         .gesture(sortMode == .manual && !isDragging ? dragGesture(item) : nil)
                     Divider()
+                        .opacity(lifting ? 0 : 1)
                 }
             }
             .padding(.horizontal, 10)
             .padding(.vertical, 4)
+            // 让位动画绑定 dragOrder(拖拽中变化的数据源);落定回绑 sorted
+            .animation(.spring(response: 0.25, dampingFraction: 0.75), value: dragOrder.map(\.id))
             .animation(.easeOut(duration: 0.15), value: sorted.map(\.id))
         }
     }
@@ -254,6 +262,7 @@ struct DaymarkListRow: View {
     struct Snapshot {
         let name: String
         let emoji: String
+        let iconImageData: Data?
         let colorIndex: Int
         let startDate: Date
         let endDate: Date?
@@ -262,6 +271,7 @@ struct DaymarkListRow: View {
         init(from item: Daymark) {
             name = item.name
             emoji = item.emoji
+            iconImageData = item.iconImageData
             colorIndex = item.colorIndex
             startDate = item.startDate
             endDate = item.endDate
@@ -305,8 +315,7 @@ struct DaymarkListRow: View {
         } else {
             Button(action: onOpen) {
                 HStack(spacing: 10) {
-                    Text(snapshot.emoji)
-                        .font(.title3)
+                    iconView
                         .frame(width: 30)
                     VStack(alignment: .leading, spacing: 2) {
                         Text(snapshot.name)
@@ -361,6 +370,21 @@ struct DaymarkListRow: View {
         .padding(.horizontal, 14)
         .padding(.vertical, 9)
         .background(Color.red.opacity(0.08))
+    }
+
+    /// 图标:有图显示圆角缩略,否则 Emoji
+    @ViewBuilder
+    private var iconView: some View {
+        if let data = snapshot.iconImageData, let image = NSImage(data: data) {
+            Image(nsImage: image)
+                .resizable()
+                .scaledToFill()
+                .frame(width: 28, height: 28)
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+        } else {
+            Text(snapshot.emoji)
+                .font(.title3)
+        }
     }
 
     /// 右侧大数字 + 单位,数字用所选颜色(票 06 的颜色标识)

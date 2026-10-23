@@ -7,6 +7,7 @@ struct DaymarkDetailView: View {
     struct Snapshot {
         let name: String
         let emoji: String
+        let iconImageData: Data?
         let colorIndex: Int
         let startDate: Date
         let endDate: Date?
@@ -17,6 +18,7 @@ struct DaymarkDetailView: View {
         init(from item: Daymark) {
             name = item.name
             emoji = item.emoji
+            iconImageData = item.iconImageData
             colorIndex = item.colorIndex
             startDate = item.startDate
             endDate = item.endDate
@@ -133,6 +135,21 @@ struct DaymarkDetailView: View {
         .padding(.vertical, 10)
     }
 
+    /// Hero 图标:有图显示大圆角图,否则 Emoji
+    @ViewBuilder
+    private var heroIcon: some View {
+        if let data = snapshot.iconImageData, let image = NSImage(data: data) {
+            Image(nsImage: image)
+                .resizable()
+                .scaledToFill()
+                .frame(width: 52, height: 52)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+        } else {
+            Text(snapshot.emoji)
+                .font(.system(size: 44))
+        }
+    }
+
     /// Hero:菱形装饰框包大 Emoji → 名称 → 日期 · 天数
     private var hero: some View {
         VStack(spacing: 10) {
@@ -141,8 +158,7 @@ struct DaymarkDetailView: View {
                     .strokeBorder(Color.secondary.opacity(0.3), lineWidth: 1)
                     .frame(width: 86, height: 86)
                     .rotationEffect(.degrees(45))
-                Text(snapshot.emoji)
-                    .font(.system(size: 44))
+                heroIcon
             }
             .padding(.vertical, 4)
 

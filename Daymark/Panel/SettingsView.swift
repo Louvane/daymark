@@ -35,13 +35,12 @@ struct GeneralSettingsView: View {
             HStack {
                 Text("settings.sort")
                 Spacer()
-                Picker("", selection: sortModeBinding) {
-                    Text("list.sort.upcoming").tag(DaymarkSortMode.upcoming)
-                    Text("list.sort.manual").tag(DaymarkSortMode.manual)
-                }
-                .labelsHidden()
-                .frame(width: 160, alignment: .trailing) // 固定宽+右对齐,与默认时刻选择器宽度一致
-                .fixedSize()
+                FormDropdown(titleKey: "settings.sort",
+                             options: [
+                                 (value: DaymarkSortMode.upcoming, label: Text("list.sort.upcoming")),
+                                 (value: DaymarkSortMode.manual, label: Text("list.sort.manual")),
+                             ],
+                             selection: sortModeBinding, width: 160)
             }
         }
         .formStyle(.grouped)

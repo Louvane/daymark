@@ -18,6 +18,7 @@ struct DaymarkFormView: View {
     @State private var repeatCycle: RepeatCycle = .none
     @State private var remindDays = 0
     @State private var emoji = "📌"
+    @State private var iconImageData: Data?
     @State private var colorIndex = 0
     @State private var showsEmojiPicker = false
     @State private var isRange = false
@@ -35,6 +36,7 @@ struct DaymarkFormView: View {
             _repeatCycle = State(initialValue: item.repeatCycle)
             _remindDays = State(initialValue: item.remindDays)
             _emoji = State(initialValue: item.emoji)
+            _iconImageData = State(initialValue: item.iconImageData)
             _colorIndex = State(initialValue: item.colorIndex)
             _isRange = State(initialValue: item.endDate != nil)
             _endDate = State(initialValue: item.endDate ?? item.startDate)
@@ -122,14 +124,17 @@ struct DaymarkFormView: View {
         .padding(.vertical, 10)
     }
 
-    /// Emoji 行:大 Emoji 即选择器开关(点击展开/收起,悬停有底色提示可点)
+    /// 图标行:Emoji/图片二选一——大图即选择器开关;右侧图片导入/移除按钮
     private var emojiRow: some View {
         HStack {
             Button {
-                withAnimation(.easeOut(duration: 0.15)) { showsEmojiPicker.toggle() }
+                withAnimation(.easeOut(duration: 0.15)) {
+                    showsEmojiPicker.toggle()
+                    iconImageData = nil // 回到 Emoji 模式(选 Emoji 即弃用图片)
+                }
             } label: {
-                Text(emoji)
-                    .font(.system(size: 40))
+                iconPreview
+                    .frame(width: 42, height: 42)
             }
             .buttonStyle(HoverIconButtonStyle())
             .help(Text("form.emoji.pick"))
@@ -140,9 +145,41 @@ struct DaymarkFormView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+            // 导入图片 / 移除图片
+            Button {
+                if iconImageData != nil {
+                    iconImageData = nil
+                } else {
+                    IconImage.pickFromPanel { data in
+                        withAnimation(.easeOut(duration: 0.15)) {
+                            iconImageData = data
+                            showsEmojiPicker = false
+                        }
+                    }
+                }
+            } label: {
+                Image(systemName: iconImageData != nil ? "photo.badge.xmark" : "photo")
+                    .font(.system(size: 14))
+            }
+            .buttonStyle(HoverIconButtonStyle())
+            .help(Text(iconImageData != nil ? "form.icon.remove" : "form.icon.import"))
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
+    }
+
+    /// 大图标预览:有图显示圆角图,否则显示 Emoji
+    @ViewBuilder
+    private var iconPreview: some View {
+        if let data = iconImageData, let image = NSImage(data: data) {
+            Image(nsImage: image)
+                .resizable()
+                .scaledToFill()
+                .clipShape(RoundedRectangle(cornerRadius: 9))
+        } else {
+            Text(emoji)
+                .font(.system(size: 40))
+        }
     }
 
     /// 颜色行:预设色板右对齐,选中圆点外圈描边
@@ -208,13 +245,11 @@ struct DaymarkFormView: View {
             }
             Divider().padding(.leading, 14)
             formRow(labelKey: "form.field.repeat") {
-                Picker("", selection: $repeatCycle) {
-                    ForEach(RepeatCycle.allCases) { cycle in
-                        Text(LocalizedStringKey(cycle.labelKey)).tag(cycle)
-                    }
-                }
-                .labelsHidden()
-                .frame(width: 118)
+                FormDropdown(titleKey: "form.field.repeat",
+                             options: RepeatCycle.allCases.map {
+                                 (value: $0, label: Text(LocalizedStringKey($0.labelKey)))
+                             },
+                             selection: $repeatCycle)
             }
             Divider().padding(.leading, 14)
             formRow(labelKey: "form.field.remind") {
@@ -254,13 +289,15 @@ struct DaymarkFormView: View {
         switch mode {
         case .create:
             store.add(Daymark(name: cleanedName, date: date,
-                              emoji: emoji, colorIndex: colorIndex,
+                              emoji: emoji, iconImageData: iconImageData,
+                              colorIndex: colorIndex,
                               endDate: validatedEnd, hasTime: hasTime,
                               repeatCycle: repeatCycle, remindDays: remindDays))
         case .edit(let item):
             item.name = cleanedName
             item.startDate = date
             item.emoji = emoji
+            item.iconImageData = iconImageData
             item.colorIndex = colorIndex
             item.endDate = validatedEnd
             item.hasTime = hasTime

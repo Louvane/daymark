@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import OSLog
 
 /// Daymark(日标):用户的一条重要日期记录。字段对齐 spec,同步字段刻意没有(ADR-0003)。
 @Model
@@ -7,8 +8,10 @@ final class Daymark {
     var id: UUID
     /// 名称(必填)
     var name: String
-    /// Emoji(票 06 前为占位)
+    /// Emoji 图标(与 iconImageData 二选一:有图显示图)
     var emoji: String
+    /// 自定义图标图片(PNG 数据,externalStorage 自动外置存储;nil = 用 emoji)
+    @Attribute(.externalStorage) var iconImageData: Data?
     /// 预设色板下标(票 06 前为 0)
     var colorIndex: Int
     /// 锚定日(区间 Daymark 为开始日,票 07)
@@ -34,6 +37,7 @@ final class Daymark {
     init(name: String,
          date: Date,
          emoji: String = "📌",
+         iconImageData: Data? = nil,
          colorIndex: Int = 0,
          endDate: Date? = nil,
          hasTime: Bool = false,
@@ -43,6 +47,7 @@ final class Daymark {
         self.id = UUID()
         self.name = name
         self.emoji = emoji
+        self.iconImageData = iconImageData
         self.colorIndex = colorIndex
         self.startDate = date
         self.endDate = endDate
