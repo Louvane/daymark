@@ -12,10 +12,10 @@ struct IconCropView: View {
     @State private var dragStartOffset: CGSize = .zero
     @State private var pinchStartScale: CGFloat = 1
 
-    private let boxSide: CGFloat = 210
+    private let boxSide: CGFloat = 180
     private let exportSide: CGFloat = 256
 
-    // 图片基础铺满(cover)尺寸
+    // 初始 cover:照片铺满圆框(图标裁剪的标准初始态),拖动/缩放选取局部
     private var baseScale: CGFloat {
         guard image.size.width > 0, image.size.height > 0 else { return 1 }
         return max(boxSide / image.size.width, boxSide / image.size.height)
@@ -39,12 +39,10 @@ struct IconCropView: View {
         VStack(spacing: 10) {
             header
             canvas
-                .frame(width: boxSide, height: boxSide)
             zoomControls
-            Spacer(minLength: 0)
         }
         .padding(.horizontal, 14)
-        .padding(.bottom, 12)
+        .padding(.vertical, 10)
         .background(Color(nsColor: .windowBackgroundColor).opacity(0.98))
     }
 
@@ -68,25 +66,43 @@ struct IconCropView: View {
         .padding(.top, 10)
     }
 
-    /// 取景画布:图片 + 暗角蒙版 + 圆环
+    /// 圆外暗化(even-odd 挖洞,确定性几何)
+    private struct HoleMask: Shape {
+        let canvasSide: CGFloat
+        func path(in rect: CGRect) -> Path {
+            var path = Path()
+            path.addRect(CGRect(origin: .zero, size: rect.size))
+            path.addEllipse(in: CGRect(x: (rect.width - canvasSide) / 2 + 1.5,
+                                       y: (rect.height - canvasSide) / 2 + 1.5,
+                                       width: canvasSide - 3,
+                                       height: canvasSide - 3))
+            return path
+        }
+    }
+
+    /// 取景画布:图片严格裁剪在 210 方框内 + 圆外暗化 + 圆环
     private var canvas: some View {
         ZStack {
             Image(nsImage: image)
                 .resizable()
+                .scaledToFill()
                 .frame(width: displaySize.width, height: displaySize.height)
                 .offset(offset)
-            // 圆外暗化
-            Rectangle()
+        }
+        .frame(width: boxSide, height: boxSide)
+        .clipped()
+        .overlay(
+            HoleMask(canvasSide: boxSide)
                 .fill(.black.opacity(0.45))
-                .reverseMask {
-                    Circle()
-                }
+        )
+        .overlay(
             Circle()
                 .strokeBorder(.white.opacity(0.85), lineWidth: 1.5)
+        )
+        .overlay(
             Circle()
                 .strokeBorder(.black.opacity(0.25), lineWidth: 0.5)
-        }
-        .clipped()
+        )
         .contentShape(Rectangle())
         .gesture(
             DragGesture()
@@ -150,18 +166,5 @@ struct IconCropView: View {
               let tiff = nsImage.tiffRepresentation,
               let rep = NSBitmapImageRep(data: tiff) else { return nil }
         return rep.representation(using: .png, properties: [:])
-    }
-}
-
-/// 反向蒙版:形状外填充
-extension View {
-    func reverseMask<Mask: View>(@ViewBuilder _ mask: () -> Mask) -> some View {
-        self.mask {
-            Rectangle()
-                .overlay(alignment: .center) {
-                    mask().blendMode(.destinationOut)
-                }
-                .compositingGroup()
-        }
     }
 }

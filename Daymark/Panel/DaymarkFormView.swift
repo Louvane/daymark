@@ -63,19 +63,11 @@ struct DaymarkFormView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            header
-            Divider()
-            ScrollView(showsIndicators: false) {
-                content
-            }
-        }
-        .animation(.easeOut(duration: 0.18), value: showsEmojiPicker)
-        .overlay {
-            // 圆形取景裁剪:选图后覆盖表单,使用/取消后收回
-            if let source = cropSourceImage {
+        Group {
+            if cropSourceImage != nil {
+                // 裁剪模式:紧凑区块替换表单内容(取消/使用后回到表单)
                 IconCropView(
-                    image: source,
+                    image: cropSourceImage!,
                     onConfirm: { data in
                         withAnimation(.easeOut(duration: 0.15)) {
                             iconImageData = data
@@ -86,8 +78,17 @@ struct DaymarkFormView: View {
                         withAnimation(.easeOut(duration: 0.15)) { cropSourceImage = nil }
                     }
                 )
+            } else {
+                VStack(spacing: 0) {
+                    header
+                    Divider()
+                    ScrollView(showsIndicators: false) {
+                        content
+                    }
+                }
             }
         }
+        .animation(.easeOut(duration: 0.18), value: showsEmojiPicker)
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .windowToolbar)
         .toolbarBackground(.hidden, for: .windowToolbar)
