@@ -50,7 +50,7 @@ struct PanelView: View {
             }
         }
         .padding(.top, 12) // 顶部留给指向图标的面板箭头
-        .frame(width: 320, height: 452)
+        .frame(width: 320, height: 560)
         .background(PanelShape().fill(.ultraThinMaterial))
         .overlay(PanelShape().stroke(Color(nsColor: .separatorColor).opacity(0.5), lineWidth: 0.5))
         .onChange(of: router.pendingDetailID) { _, newID in

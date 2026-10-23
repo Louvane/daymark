@@ -31,7 +31,7 @@ final class StatusItemPanelController: NSObject, NSWindowDelegate {
     /// borderless 面板默认 canBecomeKey = false → 永远不会 resign → 无法「点外部关闭」;
     /// 必须子类化重写(经典 NSPanel 坑)
     private let panel = PanelWindow(
-        contentRect: NSRect(x: 0, y: 0, width: 320, height: 452),
+        contentRect: NSRect(x: 0, y: 0, width: 320, height: 560),
         styleMask: [.borderless, .nonactivatingPanel],
         backing: .buffered,
         defer: false
