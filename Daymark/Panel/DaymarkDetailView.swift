@@ -72,7 +72,9 @@ struct DaymarkDetailView: View {
             numberBlock
             fieldsCard
         }
-        .padding(16)
+        .padding(.horizontal, 14)
+        .padding(.top, 14)
+        .padding(.bottom, 24) // 底部呼吸空间:字段卡不再贴面板边缘
     }
 
     /// 内联确认条(替代系统 confirmationDialog)
