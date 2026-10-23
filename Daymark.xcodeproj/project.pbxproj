@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		055C2752F32E3536A7D9D35D /* DaymarkListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C3F2746644EB0D9DE365203 /* DaymarkListView.swift */; };
 		0AFBF1A23EAF5C8E545B65F1 /* DateMathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45D67256EBF98769007380F /* DateMathTests.swift */; };
+		0BB7A9144E3DB4D02311F936 /* IconCropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD6B91AE2295A3D16F4DC54 /* IconCropView.swift */; };
 		1162364EB12130A837732FC1 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = FFC2DB073A8FE8D0984E08E4 /* Localizable.xcstrings */; };
 		15CCB6932BB7F71B88CD905D /* DaymarkURLParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED6C1B80C9BF7F3289A4F226 /* DaymarkURLParserTests.swift */; };
 		1B7BFB70DF575E164F61AFC3 /* DateMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085369E4FF8267DCE6DC35E2 /* DateMath.swift */; };
@@ -78,6 +79,7 @@
 		72C5579ADBD4AA6F82FEBA53 /* DaymarkStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaymarkStore.swift; sourceTree = "<group>"; };
 		78FA989538DCBAD72BE64755 /* RepeatCycle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatCycle.swift; sourceTree = "<group>"; };
 		857119AD43C3AAAE4B04C318 /* IconImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconImage.swift; sourceTree = "<group>"; };
+		8AD6B91AE2295A3D16F4DC54 /* IconCropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconCropView.swift; sourceTree = "<group>"; };
 		8DBFA2EA959C8B177C7D8F95 /* DaymarkApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaymarkApp.swift; sourceTree = "<group>"; };
 		92AFC5FB0348102CB2E8B52F /* DaymarkStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaymarkStatus.swift; sourceTree = "<group>"; };
 		939F84132D6B99F5EAAF9E7D /* Daymark.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Daymark.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -184,6 +186,7 @@
 				39FDDFA34476624C1FC22748 /* EmojiPickerView.swift */,
 				E485CAD8D46F36667EAC035D /* FormDropdown.swift */,
 				C919B130B655EE757D6BC2E7 /* HoverIconButtonStyle.swift */,
+				8AD6B91AE2295A3D16F4DC54 /* IconCropView.swift */,
 				F2F35C2CDF1E2DF76CA76F88 /* PanelView.swift */,
 				BA8FB58A69590845B383A7AB /* SettingsView.swift */,
 			);
@@ -329,6 +332,7 @@
 				663DA222945C92A9F1FDE807 /* EmojiPickerView.swift in Sources */,
 				82830241C61A65998E7E8E37 /* FormDropdown.swift in Sources */,
 				4B7A40C3EDC9893C5E7B6D66 /* HoverIconButtonStyle.swift in Sources */,
+				0BB7A9144E3DB4D02311F936 /* IconCropView.swift in Sources */,
 				E6F724E2A1EF4AF2DD557F8B /* IconImage.swift in Sources */,
 				752B460B09B160D26194C448 /* NotificationRouting.swift in Sources */,
 				EAAD222D356DD0EACC19E788 /* PanelView.swift in Sources */,

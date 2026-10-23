@@ -56,6 +56,8 @@ enum IconImage {
             Self.log.info("选中文件 \(size) bytes")
             if let data = pngData(from: url) {
                 Self.log.info("图片解码成功 \(data.count) bytes: \(url.lastPathComponent, privacy: .public)")
+                // 选图完成面板已收(为弹选择器),重开回到表单继续编辑
+                StatusItemPanelController.shared.showPanel()
                 onPick(data)
             } else {
                 Self.log.error("图片解码失败: \(url.lastPathComponent, privacy: .public)")

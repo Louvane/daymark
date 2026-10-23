@@ -20,6 +20,7 @@ struct DaymarkFormView: View {
     @State private var remindDays = 0
     @State private var emoji = "📌"
     @State private var iconImageData: Data?
+    @State private var cropSourceImage: NSImage?
     @State private var colorIndex = 0
     @State private var showsEmojiPicker = false
     @State private var isRange = false
@@ -153,9 +154,9 @@ struct DaymarkFormView: View {
                     iconImageData = nil
                 } else {
                     IconImage.pickFromPanel { data in
-                        Self.iconLog.info("表单收到图片数据 \(data.count) bytes")
+                        Self.iconLog.info("表单收到图片数据 \(data.count) bytes,进入裁剪")
                         withAnimation(.easeOut(duration: 0.15)) {
-                            iconImageData = data
+                            cropSourceImage = NSImage(data: data)
                             showsEmojiPicker = false
                         }
                     }
