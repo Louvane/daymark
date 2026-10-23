@@ -135,29 +135,35 @@ struct DaymarkDetailView: View {
         .padding(.vertical, 10)
     }
 
-    /// Hero 图标:有图显示大圆角图,否则 Emoji
+    /// Hero 图标:有图显示圆照,否则 Emoji
     @ViewBuilder
     private var heroIcon: some View {
         if let data = snapshot.iconImageData, let image = NSImage(data: data) {
             Image(nsImage: image)
                 .resizable()
                 .scaledToFill()
-                .frame(width: 82, height: 82)
+                .frame(width: 58, height: 58)
                 .clipShape(Circle())
         } else {
             Text(snapshot.emoji)
-                .font(.system(size: 56))
+                .font(.system(size: 40))
         }
     }
 
-    /// Hero:菱形装饰框包大 Emoji → 名称 → 日期 · 天数
+    /// Hero:双层菱形装饰(内层实底方承载图标,外层旋转 45° 菱形描边)→ 名称 → 日期 · 天数
     private var hero: some View {
         VStack(spacing: 10) {
             ZStack {
-                RoundedRectangle(cornerRadius: 14)
-                    .strokeBorder(Color.secondary.opacity(0.3), lineWidth: 1)
-                    .frame(width: 86, height: 86)
+                // 外层:旋转 45° 菱形描边
+                RoundedRectangle(cornerRadius: 20)
+                    .strokeBorder(Color.secondary.opacity(0.35), lineWidth: 1)
+                    .frame(width: 118, height: 118)
                     .rotationEffect(.degrees(45))
+                // 内层:实底圆角方(承载图标/照片)
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(Color(nsColor: .windowBackgroundColor))
+                    .shadow(color: .black.opacity(0.07), radius: 5, y: 2)
+                    .frame(width: 92, height: 92)
                 heroIcon
             }
             .padding(.vertical, 4)
