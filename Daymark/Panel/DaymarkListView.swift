@@ -168,18 +168,23 @@ struct DaymarkListView: View {
                 let order = isDragging ? dragOrder : sorted
                 ForEach(order, id: \.id) { item in
                     row(item)
-                        .scaleEffect(dragItemID == item.id ? 1.02 : 1)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(dragItemID == item.id
+                                      ? Color(nsColor: .windowBackgroundColor)
+                                      : Color.clear)
+                                .shadow(color: dragItemID == item.id ? .black.opacity(0.25) : .clear,
+                                        radius: dragItemID == item.id ? 12 : 0, y: 6)
+                        )
+                        .scaleEffect(dragItemID == item.id ? 1.04 : 1)
                         .offset(y: dragItemID == item.id ? dragVisualOffset : 0)
                         .zIndex(dragItemID == item.id ? 1 : 0)
-                        .shadow(color: dragItemID == item.id ? .black.opacity(0.22) : .clear,
-                                radius: dragItemID == item.id ? 10 : 0, y: 4)
                         .gesture(sortMode == .manual && !isDragging ? dragGesture(item) : nil)
-                    Divider().padding(.leading, 46)
+                    Divider()
                 }
             }
-            .padding(.horizontal, 12)
+            .padding(.horizontal, 10)
             .padding(.vertical, 4)
-            .animation(.spring(response: 0.28, dampingFraction: 0.8), value: dragOrder.map(\.id))
             .animation(.easeOut(duration: 0.15), value: sorted.map(\.id))
         }
     }
@@ -199,7 +204,7 @@ struct DaymarkListView: View {
                     let target = min(max(dragInitialIndex + Int((dragTranslation / manualRowHeight).rounded()),
                                          0), count - 1)
                     if target != dragCurrentIndex {
-                        withAnimation(.spring(response: 0.28, dampingFraction: 0.8)) {
+                        withAnimation(.spring(response: 0.25, dampingFraction: 0.7)) {
                             dragOrder.move(fromOffsets: IndexSet(integer: dragCurrentIndex),
                                            toOffset: target > dragCurrentIndex ? target + 1 : target)
                             dragCurrentIndex = target
@@ -315,7 +320,14 @@ struct DaymarkListRow: View {
                     badge
                 }
                 .padding(.vertical, 8)
+                .padding(.horizontal, 4)
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(hovering ? Color.primary.opacity(0.05) : Color.clear)
+                )
                 .contentShape(Rectangle())
+                .onHover { hovering = $0 }
+                .animation(.easeOut(duration: 0.12), value: hovering)
             }
             .buttonStyle(.plain)
             .contextMenu {
@@ -329,7 +341,7 @@ struct DaymarkListRow: View {
         .animation(.easeOut(duration: 0.15), value: confirmingDelete)
     }
 
-    /// 内联确认条:替代系统 confirmationDialog(后者会令面板失焦自动关闭)
+    /// 内联确认条:整行粉底(对齐排版稿 .row.confirm)
     private var confirmBar: some View {
         HStack(spacing: 10) {
             Text("detail.delete.confirm.title")
@@ -345,7 +357,9 @@ struct DaymarkListRow: View {
                 .controlSize(.small)
                 .tint(.red)
         }
-        .padding(.vertical, 8)
+        .padding(.horizontal, 14)
+        .padding(.vertical, 9)
+        .background(Color.red.opacity(0.08))
     }
 
     /// 右侧大数字 + 单位,数字用所选颜色(票 06 的颜色标识)

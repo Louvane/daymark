@@ -228,7 +228,10 @@ struct DaymarkDetailView: View {
                 }
             }
         }
-        .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 12))
+        .background(Color(nsColor: .windowBackgroundColor).opacity(0.55),
+                    in: RoundedRectangle(cornerRadius: 10))
+        .overlay(RoundedRectangle(cornerRadius: 10)
+            .stroke(Color(nsColor: .separatorColor).opacity(0.5), lineWidth: 1))
     }
 
     private func fieldRow(labelKey: LocalizedStringKey, value: String) -> some View {
