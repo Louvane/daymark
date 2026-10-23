@@ -120,7 +120,7 @@ struct DaymarkDetailView: View {
                 Button(action: onBack) {
                     Image(systemName: "chevron.left")
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(HoverIconButtonStyle())
                 .help(Text("common.back"))
                 Spacer()
                 HStack(spacing: 12) {
