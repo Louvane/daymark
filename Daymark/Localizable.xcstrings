@@ -514,6 +514,23 @@
         }
       }
     },
+    "form.emoji.pick": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick an emoji"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择 Emoji"
+          }
+        }
+      }
+    },
     "form.field.appearance": {
       "extractionState": "manual",
       "localizations": {

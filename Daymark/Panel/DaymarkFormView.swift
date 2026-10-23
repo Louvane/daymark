@@ -66,6 +66,8 @@ struct DaymarkFormView: View {
         .animation(.easeOut(duration: 0.18), value: showsEmojiPicker)
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .windowToolbar)
+        .toolbarBackground(.hidden, for: .windowToolbar)
+        .navigationTitle("")
     }
 
     /// 表单内容(抽离以便快照测试直接渲染)。
@@ -120,26 +122,24 @@ struct DaymarkFormView: View {
         .padding(.vertical, 10)
     }
 
-    /// Emoji 行:大 Emoji 居左(点按切换选择器),☺ 按钮居右
+    /// Emoji 行:大 Emoji 即选择器开关(点击展开/收起,悬停有底色提示可点)
     private var emojiRow: some View {
         HStack {
             Button {
-                showsEmojiPicker.toggle()
+                withAnimation(.easeOut(duration: 0.15)) { showsEmojiPicker.toggle() }
             } label: {
                 Text(emoji)
                     .font(.system(size: 40))
             }
-            .buttonStyle(.plain)
-            Spacer()
-            Button {
-                showsEmojiPicker = true
-            } label: {
-                Text("☺")
-                    .font(.system(size: 15))
-                    .frame(width: 26, height: 26)
-                    .background(.quaternary.opacity(0.6), in: Circle())
-            }
             .buttonStyle(HoverIconButtonStyle())
+            .help(Text("form.emoji.pick"))
+            Spacer()
+            // 状态指示:选择器展开时显示收起箭头
+            if showsEmojiPicker {
+                Image(systemName: "chevron.up")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 10)

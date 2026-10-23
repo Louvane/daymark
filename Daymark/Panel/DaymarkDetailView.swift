@@ -56,7 +56,9 @@ struct DaymarkDetailView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
-        .toolbar(.hidden, for: .windowToolbar) // 压掉 macOS 自动挂的窗口工具栏编辑按钮
+        .toolbar(.hidden, for: .windowToolbar)
+        .toolbarBackground(.hidden, for: .windowToolbar)
+        .navigationTitle("") // 压掉 macOS 自动挂的窗口工具栏编辑按钮
     }
 
     /// 滚动内容(抽离以便快照测试直接渲染,绕过 ScrollView 的 ImageRenderer 限制)
