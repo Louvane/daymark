@@ -25,11 +25,17 @@ enum IconImage {
     /// 文件选择(非模态 begin,适配非激活面板),PNG/JPG,≤5MB
     @MainActor
     static func pickFromPanel(onPick: @escaping (Data) -> Void) {
+        // LSUIElement 未激活时新窗 z 序垫底,且菜单栏面板(statusBar 层级)会盖住
+        // 一切普通窗口(含本选择器):必须先收面板 + 激活应用
+        StatusItemPanelController.shared.closePanel()
+        NSApp.activate(ignoringOtherApps: true)
+
         let panel = NSOpenPanel()
         panel.allowedContentTypes = [.png, .jpeg]
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false
         panel.message = String(localized: "form.icon.pick.message")
+        panel.level = .floating // 双保险:浮于普通窗口之上
         panel.begin { response in
             guard response == .OK, let url = panel.url,
                   let size = (try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize), size <= 5 * 1024 * 1024 else {
