@@ -40,7 +40,8 @@ struct GeneralSettingsView: View {
                     Text("list.sort.manual").tag(DaymarkSortMode.manual)
                 }
                 .labelsHidden()
-                .frame(width: 118)
+                .frame(width: 160, alignment: .trailing) // 固定宽+右对齐,与默认时刻选择器宽度一致
+                .fixedSize()
             }
         }
         .formStyle(.grouped)
