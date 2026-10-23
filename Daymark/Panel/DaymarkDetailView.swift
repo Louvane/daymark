@@ -135,38 +135,40 @@ struct DaymarkDetailView: View {
         .padding(.vertical, 10)
     }
 
-    /// Hero 图标:有图显示圆照,否则 Emoji
+    /// Hero 图标:有图显示大圆照,否则 Emoji
     @ViewBuilder
     private var heroIcon: some View {
         if let data = snapshot.iconImageData, let image = NSImage(data: data) {
             Image(nsImage: image)
                 .resizable()
                 .scaledToFill()
-                .frame(width: 58, height: 58)
+                .frame(width: 68, height: 68)
                 .clipShape(Circle())
+                .shadow(color: .black.opacity(0.10), radius: 4, y: 2)
         } else {
             Text(snapshot.emoji)
-                .font(.system(size: 40))
+                .font(.system(size: 48))
         }
     }
 
-    /// Hero:双层菱形装饰(内层实底方承载图标,外层旋转 45° 菱形描边)→ 名称 → 日期 · 天数
+    /// Hero:双层菱形描边装饰(仅描边,图标叠于其上)→ 名称 → 日期 · 天数
     private var hero: some View {
         VStack(spacing: 10) {
             ZStack {
-                // 外层:旋转 45° 菱形描边
-                RoundedRectangle(cornerRadius: 20)
-                    .strokeBorder(Color.secondary.opacity(0.35), lineWidth: 1)
-                    .frame(width: 118, height: 118)
+                // 外层菱形描边
+                RoundedRectangle(cornerRadius: 26)
+                    .strokeBorder(Color.secondary.opacity(0.4), lineWidth: 1)
+                    .frame(width: 132, height: 132)
                     .rotationEffect(.degrees(45))
-                // 内层:实底圆角方(承载图标/照片)
+                // 内层菱形描边
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(Color(nsColor: .windowBackgroundColor))
-                    .shadow(color: .black.opacity(0.07), radius: 5, y: 2)
-                    .frame(width: 92, height: 92)
+                    .strokeBorder(Color.secondary.opacity(0.3), lineWidth: 1)
+                    .frame(width: 102, height: 102)
+                    .rotationEffect(.degrees(45))
+                // 图标(圆形照片/Emoji)叠于中心
                 heroIcon
             }
-            .padding(.vertical, 4)
+            .padding(.vertical, 6)
 
             Text(snapshot.name)
                 .font(.title3.bold())
