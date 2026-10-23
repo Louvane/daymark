@@ -151,7 +151,7 @@ struct DaymarkDetailView: View {
             Image(nsImage: image)
                 .resizable()
                 .scaledToFill()
-                .frame(width: 60, height: 60)
+                .frame(width: 96, height: 96)
                 .clipShape(Circle())
         } else {
             Text(snapshot.emoji)
@@ -178,11 +178,11 @@ struct DaymarkDetailView: View {
             .padding(.vertical, 6)
 
             Text(snapshot.name)
-                .font(.title3.bold())
+                .font(.system(size: 20, weight: .bold))
                 .multilineTextAlignment(.center)
 
             metaLine
-                .font(.caption)
+                .font(.system(size: 15))
                 .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
@@ -206,14 +206,15 @@ struct DaymarkDetailView: View {
     private var numberBlock: some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
             Text(badgeNumber)
-                .font(.system(size: 44, weight: .bold, design: .rounded))
+                .font(.system(size: 42, weight: .bold, design: .rounded))
                 .monospacedDigit()
             Text(badgeUnit)
-                .font(.title3)
+                .font(.system(size: 17))
                 .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 18)
+        .padding(.vertical, 20)
+        .padding(.horizontal, 11)
         .background(.quaternary.opacity(0.5), in: RoundedRectangle(cornerRadius: 12))
     }
 
